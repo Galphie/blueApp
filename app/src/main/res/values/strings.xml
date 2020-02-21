@@ -1,3 +1,13 @@
 <resources>
-    <string name="app_name">BlueApp</string>
+    <string name="app_name">Bluetooth</string>
+    <string name="temperatura">Temperatura</string>
+    <string name="co2_level">Nivel de CO2</string>
+    <string name="int_lum">Intensidad lumínica</string>
+    <string name="personas">Número de personas</string>
+    <string name="send">Enviar</string>
+    <string name="empty_text">-</string>
+    <string name="menu_devices">Dispositivos disponibles</string>
+    <string name="menu_graphics">Gráficas</string>
+    <string name="menu_settings">Ajustes</string>
+    <string name="mac_test_address">patata</string>
 </resources>
