@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/devices"
+        android:icon="@android:drawable/stat_sys_data_bluetooth"
+        android:title="@string/menu_devices"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/graphics"
+        android:title="@string/menu_graphics" />
+    <item
+        android:id="@+id/ajustes"
+        android:title="@string/menu_settings" />
+</menu>
