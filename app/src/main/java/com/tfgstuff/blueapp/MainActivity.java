@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     static final UUID serviceUUID = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
 
     private final static String MAC = "A4:CF:12:9A:1D:5A";
-
+//  Estamos haqciendo una pruebita
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
