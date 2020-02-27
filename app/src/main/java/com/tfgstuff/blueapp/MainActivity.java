@@ -102,8 +102,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.btn_scan:
-                Utils.toast(getApplicationContext(), "Botón de escáner presionado");
-
                 if (!mBTLeScanner.isScanning()){
                     startScan();
                 } else {
