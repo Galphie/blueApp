@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bluetooth</string>
+    <string name="app_name">BlueApp</string>
     <string name="temperatura">Temperatura</string>
     <string name="co2_level">Nivel de CO2</string>
     <string name="int_lum">Intensidad lumínica</string>

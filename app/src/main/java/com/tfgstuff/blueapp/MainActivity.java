@@ -1,6 +1,7 @@
 package com.tfgstuff.blueapp;
 
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -51,31 +52,31 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
 
         registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
     }
 
     @Override
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
     }
 
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
 
         unregisterReceiver(mBTStateUpdateReceiver);
     }
 
     @Override
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
     }
 
@@ -96,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.btn_scan:
-                Utils.toast(getApplicationContext(),"Botón de escáner presionado");
+                Utils.toast(getApplicationContext(), "Botón de escáner presionado");
                 break;
             default:
                 break;
@@ -111,6 +112,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    public void addDevice(BluetoothDevice device, int new_rssi) {
+
+
+    }
+
+    public void stopScan() {
+
 
     }
 }
