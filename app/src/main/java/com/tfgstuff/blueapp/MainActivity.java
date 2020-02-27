@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,7 +21,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import java.io.IOException;
 import java.util.Set;
 import java.util.UUID;
 
@@ -65,56 +63,16 @@ public class MainActivity extends AppCompatActivity {
         final BluetoothManager bluetoothManager =
                 (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
         bluetoothAdapter = bluetoothManager.getAdapter();
+        boolean conectado = false;
 
         if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            status.setText("Bluetooth no habilitado, conectando...");
+            status.setText("Bluetooth no habilitado");
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            status.setText("Conectado");
-        }
-
-        textViewPaired.setText("");
-        Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice device : devices) {
-            if (device.getAddress().equals(MAC)) {
-                textViewPaired.append(device.getName());
-            }
-        }
-
-        try {
-            bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
-            bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);
-            bluetoothSocket.connect();
-
-        } catch (IOException ex) {
-            Toast toast = Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG);
-            Log.e("Excepcion rara", ex.toString());
-            toast.show();
         }
 
         final Button btnScan = (Button) findViewById(R.id.btnScan);
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (showingBtnText == true) {
-                    btnScan.setText("Escanear");
-                    Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-                    for (BluetoothDevice device : devices) {
-                        if (device.getName().equals("ESP32test")) {
 
-                            textViewPaired.setText(device.getName());
-                        }
-                    }
-                    showingBtnText = false;
-                    status.setText("Scan complete");
-                } else {
-                    btnScan.setText("Detener escaneo");
-                    showingBtnText = true;
-                    status.setText("Scanning...");
-                }
-            }
-        });
     }
 
     @Override
@@ -146,8 +104,23 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static void recibirDatos() {
+    public void checkStatus(View view){
+        if (isConnected()){
+            status.setText("Conectado");
+        } else{
+            status.setText("Bluetooth no habilitado.");
+        }
+    }
+    public boolean isConnected() {
+        boolean conectado = false;
+        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
 
+            conectado = false;
+
+        } else {
+            conectado = true;
+        }
+        return conectado;
     }
 
 

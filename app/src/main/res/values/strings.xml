@@ -10,4 +10,5 @@
     <string name="menu_graphics">Gráficas</string>
     <string name="menu_settings">Ajustes</string>
     <string name="mac_test_address">patata</string>
+    <string name="ble_not_supported">Su dispositivo no es compatible con BLE</string>
 </resources>

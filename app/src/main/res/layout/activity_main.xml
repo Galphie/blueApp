@@ -142,7 +142,7 @@
         android:id="@+id/status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="100dp"
+        android:layout_marginStart="32dp"
         android:text="@string/empty_text"
         android:textColor="@color/colorAccent"
         app:layout_constraintStart_toEndOf="@+id/statusText"
@@ -152,7 +152,7 @@
         android:id="@+id/text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="80dp"
         android:text="Dispositivos:"
         android:textColor="@color/colorAccent"
         app:layout_constraintStart_toStartOf="@+id/statusText"
@@ -164,20 +164,21 @@
         android:layout_height="wrap_content"
         android:text="@string/empty_text"
         android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/status"
+        app:layout_constraintStart_toStartOf="@+id/temperatura"
         app:layout_constraintTop_toTopOf="@+id/text" />
 
     <Button
         android:id="@+id/btnScan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="22dp"
+        android:layout_marginTop="16dp"
         android:background="@color/colorAccent"
+        android:onClick="checkStatus"
         android:padding="5sp"
-        android:text="Escanear"
+        android:text="Comprobar estado"
         android:textColor="@android:color/white"
-        app:layout_constraintStart_toStartOf="@+id/text"
-        app:layout_constraintTop_toBottomOf="@+id/text" />
+        app:layout_constraintStart_toStartOf="@+id/statusText"
+        app:layout_constraintTop_toBottomOf="@+id/statusText" />
 
     <Button
         android:id="@+id/datosButton"
