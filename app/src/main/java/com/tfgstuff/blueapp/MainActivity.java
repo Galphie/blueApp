@@ -29,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btn_scan;
 
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
+    private Scanner_BTLE mBTLeScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
+        mBTLeScanner = new Scanner_BTLE(this, 7500, -75);
 
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
@@ -66,6 +68,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onPause() {
         super.onPause();
+
+        stopScan();
     }
 
     @Override
@@ -73,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onStop();
 
         unregisterReceiver(mBTStateUpdateReceiver);
+        stopScan();
     }
 
     @Override
@@ -98,6 +103,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (v.getId()) {
             case R.id.btn_scan:
                 Utils.toast(getApplicationContext(), "Botón de escáner presionado");
+
+                if (!mBTLeScanner.isScanning()){
+                    startScan();
+                } else {
+                    stopScan();
+                }
+
                 break;
             default:
                 break;
@@ -117,12 +129,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void addDevice(BluetoothDevice device, int new_rssi) {
 
+        String address = device.getAddress();
+        if (!mBTDevicesHashMap.containsKey(address)) {
+            BTLE_Device btle_device = new BTLE_Device(device);
+            btle_device.setRssi(new_rssi);
 
+            mBTDevicesHashMap.put(address, btle_device);
+            mBTDevicesArrayList.add(btle_device);
+        } else {
+            mBTDevicesHashMap.get(address).setRssi(new_rssi);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void startScan(){
+        btn_scan.setText("Escaneando...");
+
+        mBTDevicesArrayList.clear();
+        mBTDevicesHashMap.clear();
+
+        adapter.notifyDataSetChanged();
+
+        mBTLeScanner.start();
     }
 
     public void stopScan() {
+        btn_scan.setText("Escanear de nuevo");
 
-
+        mBTLeScanner.stop();
     }
 }
 
