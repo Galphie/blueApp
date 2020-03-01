@@ -2,155 +2,161 @@ package com.tfgstuff.blueapp;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.bluetooth.BluetoothManager;
-import android.bluetooth.BluetoothSocket;
-import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.ListView;
+import android.widget.ScrollView;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.UUID;
+import java.util.ArrayList;
+import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity {
-    boolean showingBtnText = false;
-    TextView temperatura, intensidad, co2, personas, status, textViewPaired;
-    EditText datos;
-    ImageButton boton;
-    Button datosButton;
-    private final static int REQUEST_ENABLE_BT = 1;
-    private static final int REQUEST_DISCOVER_BT = 0;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
-    private static BluetoothAdapter bluetoothAdapter;
-    private static BluetoothSocket bluetoothSocket;
-    private static BluetoothDevice bluetoothDevice;
+    public final static String TAG = MainActivity.class.getSimpleName();
 
-    static final UUID myUUID = UUID.fromString("beb5483e-36e1-4688-b7f5-ea07361b26a8");
-    static final UUID serviceUUID = UUID.fromString("4fafc201-1fb5-459e-8fcc-c5c9c331914b");
+    public static final int REQUEST_ENABLE_BT = 1;
 
-    private final static String MAC = "A4:CF:12:9A:1D:5A";
+    private HashMap<String, BTLE_Device> mBTDevicesHashMap;
+    private ArrayList<BTLE_Device> mBTDevicesArrayList;
+    private ListAdapter_BTLE_Devices adapter;
 
+    private Button btn_scan;
+
+    private BroadcastReceiver_BTState mBTStateUpdateReceiver;
+    private Scanner_BTLE mBTLeScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mBTStateUpdateReceiver = new BroadcastReceiver_BTState(getApplicationContext());
+        mBTLeScanner = new Scanner_BTLE(this, 7500, -75);
 
-        textViewPaired = (TextView) findViewById(R.id.textViewPaired);
-        status = (TextView) findViewById(R.id.status);
-        temperatura = (TextView) findViewById(R.id.temperatura);
-        intensidad = (TextView) findViewById(R.id.iLuminica);
-        co2 = (TextView) findViewById(R.id.co2level);
-        personas = (TextView) findViewById(R.id.personas);
-        datos = (EditText) findViewById(R.id.datos);
-        boton = (ImageButton) findViewById(R.id.boton);
-        datosButton = (Button) findViewById(R.id.datosButton);
+        mBTDevicesHashMap = new HashMap<>();
+        mBTDevicesArrayList = new ArrayList<>();
 
-        final BluetoothManager bluetoothManager =
-                (BluetoothManager) getSystemService(Context.BLUETOOTH_SERVICE);
-        bluetoothAdapter = bluetoothManager.getAdapter();
+        adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
 
-        if (bluetoothAdapter == null || !bluetoothAdapter.isEnabled()) {
-            status.setText("Bluetooth no habilitado, conectando...");
-            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-        } else {
-            status.setText("Conectado");
-        }
+        ListView listView = new ListView(this);
+        listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+        ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
 
-        textViewPaired.setText("");
-        Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-        for (BluetoothDevice device : devices) {
-            if (device.getAddress().equals(MAC)) {
-                textViewPaired.append(device.getName());
+        btn_scan = (Button) findViewById(R.id.btn_scan);
+        findViewById(R.id.btn_scan).setOnClickListener(this);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        registerReceiver(mBTStateUpdateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        stopScan();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        unregisterReceiver(mBTStateUpdateReceiver);
+        stopScan();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_ENABLE_BT) {
+            if (resultCode == RESULT_OK) {
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Utils.toast(getApplicationContext(), "Por favor, habilita el Bluetooth");
             }
         }
+    }
 
-        try {
-            bluetoothDevice = bluetoothAdapter.getRemoteDevice(MAC);
-            bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(myUUID);
-            bluetoothSocket.connect();
+    @Override
+    public void onClick(View v) {
 
-        } catch (IOException ex) {
-            Toast toast = Toast.makeText(this, ex.toString(), Toast.LENGTH_LONG);
-            Log.e("Excepcion rara", ex.toString());
-            toast.show();
-        }
-
-        final Button btnScan = (Button) findViewById(R.id.btnScan);
-        btnScan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (showingBtnText == true) {
-                    btnScan.setText("Escanear");
-                    Set<BluetoothDevice> devices = bluetoothAdapter.getBondedDevices();
-                    for (BluetoothDevice device : devices) {
-                        if (device.getName().equals("ESP32test")) {
-
-                            textViewPaired.setText(device.getName());
-                        }
-                    }
-                    showingBtnText = false;
-                    status.setText("Scan complete");
+        switch (v.getId()) {
+            case R.id.btn_scan:
+                if (!mBTLeScanner.isScanning()) {
+                    startScan();
                 } else {
-                    btnScan.setText("Detener escaneo");
-                    showingBtnText = true;
-                    status.setText("Scanning...");
+                    stopScan();
                 }
-            }
-        });
-    }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu, menu);
-        return true;
-    }
-
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.devices:
-                startActivityForResult(new Intent(Settings.ACTION_BLUETOOTH_SETTINGS), 0);
-
-
-                return true;
-            case R.id.ajustes:
-                /*Intent sett = new Intent(this, AboutUsActivity.class);
-                startActivity(sett);*/
-                Toast.makeText(this, "Esto abrirá 'Ajustes'", Toast.LENGTH_LONG).show();
-                return true;
-            case R.id.graphics:
-                Toast.makeText(this, "Esto abrirá 'Gráficas'", Toast.LENGTH_LONG).show();
-                return true;
+                break;
             default:
-                return super.onOptionsItemSelected(item);
+                break;
         }
-    }
-
-    public static void recibirDatos() {
 
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
+    }
+
+    @Override
+    public void onPointerCaptureChanged(boolean hasCapture) {
+
+    }
+
+    public void addDevice(BluetoothDevice device, int new_rssi) {
+
+        String address = device.getAddress();
+        if (!mBTDevicesHashMap.containsKey(address)) {
+            BTLE_Device btle_device = new BTLE_Device(device);
+            btle_device.setRssi(new_rssi);
+
+            mBTDevicesHashMap.put(address, btle_device);
+            mBTDevicesArrayList.add(btle_device);
+        } else {
+            mBTDevicesHashMap.get(address).setRssi(new_rssi);
+        }
+
+        adapter.notifyDataSetChanged();
+    }
+
+    public void startScan() {
+        btn_scan.setText("Escaneando...");
+
+        mBTDevicesArrayList.clear();
+        mBTDevicesHashMap.clear();
+
+        adapter.notifyDataSetChanged();
+
+        mBTLeScanner.start();
+    }
+
+    public void stopScan() {
+        btn_scan.setText("Escanear de nuevo");
+
+        mBTLeScanner.stop();
+    }
 }
 
 
