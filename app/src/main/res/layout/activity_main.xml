@@ -18,178 +18,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/temperatura"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
-        android:text="@string/empty_text"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toTopOf="@+id/textView" />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/personas"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/textView3"
-        app:layout_constraintTop_toBottomOf="@+id/textView3" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/co2_level"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/textView2"
-        app:layout_constraintTop_toBottomOf="@+id/textView2" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/int_lum"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
-
-    <TextView
-        android:id="@+id/personas"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/empty_text"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/co2level"
-        app:layout_constraintTop_toBottomOf="@+id/co2level" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
-        android:layout_marginTop="244dp"
-        android:text="@string/temperatura"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/co2level"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/empty_text"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/iLuminica"
-        app:layout_constraintTop_toBottomOf="@+id/iLuminica" />
-
-    <TextView
-        android:id="@+id/iLuminica"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/empty_text"
-        android:textAlignment="center"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/temperatura"
-        app:layout_constraintTop_toBottomOf="@+id/temperatura" />
-
-    <EditText
-        android:id="@+id/datos"
-        android:layout_width="250dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="192dp"
-        android:background="@color/colorPrimaryDark"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
-    <ImageButton
-        android:id="@+id/boton"
-        android:layout_width="43dp"
-        android:layout_height="44dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="24dp"
-        android:background="@color/colorAccent"
+    <ScrollView
+        android:id="@+id/scrollView"
+        android:layout_width="0dp"
+        android:layout_height="548dp"
+        android:fillViewport="true"
+        android:layout_marginBottom="64dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/datos"
-        app:layout_constraintTop_toTopOf="@+id/datos"
-        app:srcCompat="@android:drawable/ic_menu_send" />
-
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="17dp"
-        android:text="Estado: "
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
-
-    <TextView
-        android:id="@+id/status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:text="@string/empty_text"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toEndOf="@+id/statusText"
-        app:layout_constraintTop_toTopOf="@+id/statusText" />
-
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
-        android:text="Dispositivos:"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/statusText"
-        app:layout_constraintTop_toBottomOf="@+id/statusText" />
-
-    <TextView
-        android:id="@+id/textViewPaired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/empty_text"
-        android:textColor="@color/colorAccent"
-        app:layout_constraintStart_toStartOf="@+id/temperatura"
-        app:layout_constraintTop_toTopOf="@+id/text" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Button
-        android:id="@+id/btnScan"
+        android:id="@+id/btn_scan"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:background="@color/colorAccent"
-        android:onClick="checkStatus"
-        android:padding="5sp"
-        android:text="Comprobar estado"
-        android:textColor="@android:color/white"
-        app:layout_constraintStart_toStartOf="@+id/statusText"
-        app:layout_constraintTop_toBottomOf="@+id/statusText" />
-
-    <Button
-        android:id="@+id/datosButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@color/colorAccent"
-        android:padding="5sp"
-        android:text="Recibir datos"
-        android:textColor="@android:color/white"
-        app:layout_constraintStart_toStartOf="@+id/btnScan"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
-
+        android:text="@string/scan"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/scrollView" />
 </androidx.constraintlayout.widget.ConstraintLayout>

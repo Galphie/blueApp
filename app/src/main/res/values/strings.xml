@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Bluetooth</string>
+    <string name="app_name">BlueApp</string>
     <string name="temperatura">Temperatura</string>
     <string name="co2_level">Nivel de CO2</string>
     <string name="int_lum">Intensidad lumínica</string>
@@ -11,4 +11,7 @@
     <string name="menu_settings">Ajustes</string>
     <string name="mac_test_address">patata</string>
     <string name="ble_not_supported">Su dispositivo no es compatible con BLE</string>
+    <string name="scan">Escanear</string>
+    <string name="device_name">Nombre:</string>
+    <string name="device_address">Dirección:</string>
 </resources>
