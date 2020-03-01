@@ -9,7 +9,7 @@ public class BroadcastReceiver_BTState extends BroadcastReceiver {
 
     Context activityContext;
 
-    public BroadcastReceiver_BTState(Context activityContext){
+    public BroadcastReceiver_BTState(Context activityContext) {
         this.activityContext = activityContext;
     }
 
@@ -17,10 +17,10 @@ public class BroadcastReceiver_BTState extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         final String action = intent.getAction();
 
-        if(action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
+        if (action.equals(BluetoothAdapter.ACTION_STATE_CHANGED)) {
             final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
 
-            switch (state){
+            switch (state) {
                 case BluetoothAdapter.STATE_OFF:
                     Utils.toast(activityContext, "Bluetooth deshabilitado");
                     break;

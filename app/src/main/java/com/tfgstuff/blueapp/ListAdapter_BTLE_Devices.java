@@ -8,8 +8,6 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 
 public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
@@ -30,7 +28,7 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater)
                     activity.getApplicationContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(layoutResourceID,parent, false);
+            convertView = inflater.inflate(layoutResourceID, parent, false);
         }
 
         BTLE_Device device = devices.get(position);
@@ -39,7 +37,7 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
         int rssi = device.getRssi();
 
         TextView tv_name = (TextView) convertView.findViewById(R.id.tv_name);
-        if (name != null && name.length()>0){
+        if (name != null && name.length() > 0) {
             tv_name.setText(device.getName());
         } else {
             tv_name.setText("Nombre desconocido");

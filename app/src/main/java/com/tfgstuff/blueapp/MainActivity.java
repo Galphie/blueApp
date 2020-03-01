@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         switch (v.getId()) {
             case R.id.btn_scan:
-                if (!mBTLeScanner.isScanning()){
+                if (!mBTLeScanner.isScanning()) {
                     startScan();
                 } else {
                     stopScan();
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter.notifyDataSetChanged();
     }
 
-    public void startScan(){
+    public void startScan() {
         btn_scan.setText("Escaneando...");
 
         mBTDevicesArrayList.clear();
