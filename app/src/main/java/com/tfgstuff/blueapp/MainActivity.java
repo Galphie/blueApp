@@ -1,8 +1,10 @@
 package com.tfgstuff.blueapp;
 
 import android.Manifest;
+import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
@@ -21,6 +23,8 @@ import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
+import static java.lang.String.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -45,7 +49,18 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String mensaje = mBTDevicesArrayList.get(position).getName() +", " + mBTDevicesArrayList.get(position).getAddress();
+                Intent intent = new Intent(getApplicationContext(), DataActivity.class);
+
+                intent.putExtra("Name",mBTDevicesArrayList.get(position).getName());
+                intent.putExtra("Address",mBTDevicesArrayList.get(position).getAddress());
+                startActivity(intent);
+            }
+        });
         ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
         btn_scan = (Button) findViewById(R.id.btn_scan);
         findViewById(R.id.btn_scan).setOnClickListener(this);
@@ -135,6 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
