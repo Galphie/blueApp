@@ -5,9 +5,6 @@ import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
-
-import java.util.logging.LogRecord;
 
 public class Scanner_BTLE {
 
@@ -81,7 +78,6 @@ public class Scanner_BTLE {
                         final Runnable r = new Runnable() {
                             @Override
                             public void run() {
-                                Log.e("Prueba rssi",String.valueOf(new_rssi));
                                 ma.addDevice(device, new_rssi);
                             }
                         };
