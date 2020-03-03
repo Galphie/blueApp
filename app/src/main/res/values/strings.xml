@@ -14,4 +14,5 @@
     <string name="scan">Escanear</string>
     <string name="device_name">Nombre:</string>
     <string name="device_address">Dirección:</string>
+    <string name="log_out">Cerrar sesión</string>
 </resources>

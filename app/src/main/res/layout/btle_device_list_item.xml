@@ -31,16 +31,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/dName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:text="-"
-                android:textColor="@color/cardview_light_background"
-                app:layout_constraintStart_toEndOf="@+id/tv_name"
-                app:layout_constraintTop_toTopOf="@+id/tv_name" />
-
-            <TextView
                 android:id="@+id/tv_rssi"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -64,9 +54,10 @@
                 android:id="@+id/tv_macaddr"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@string/empty_text"
                 android:textColor="@color/cardview_light_background"
-                app:layout_constraintStart_toStartOf="@+id/dName"
+                app:layout_constraintStart_toEndOf="@+id/textView2"
                 app:layout_constraintTop_toTopOf="@+id/textView2" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
