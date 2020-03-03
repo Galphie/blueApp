@@ -2,6 +2,9 @@ package com.tfgstuff.blueapp;
 
 import android.bluetooth.BluetoothDevice;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 public class BTLE_Device {
 
     private BluetoothDevice bluetoothDevice;
@@ -26,4 +29,21 @@ public class BTLE_Device {
     public void setRssi(int rssi) {
         this.rssi = rssi;
     }
+
+    public JSONObject toJSON(){
+
+        JSONObject jsonObject= new JSONObject();
+        try {
+            jsonObject.put("bluetoothDevice", bluetoothDevice);
+            jsonObject.put("rssi", getRssi());
+
+            return jsonObject;
+        } catch (JSONException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 }

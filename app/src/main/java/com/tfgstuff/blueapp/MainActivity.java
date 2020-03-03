@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                 intent.putExtra("Name",mBTDevicesArrayList.get(position).getName());
                 intent.putExtra("Address",mBTDevicesArrayList.get(position).getAddress());
+//                intent.putExtra("Objeto", mBTDevicesArrayList.get(position).toJSON());
                 startActivity(intent);
             }
         });

@@ -1,5 +1,9 @@
 package com.tfgstuff.blueapp;
 
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.bluetooth.BluetoothGatt;
+import android.bluetooth.BluetoothGattCallback;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,9 +14,21 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import static android.bluetooth.BluetoothDevice.TRANSPORT_LE;
+
 public class DataActivity extends AppCompatActivity {
 
     private TextView name, address;
+    private BTLE_Device btle_device;
+    private BluetoothAdapter bluetoothAdapter;
+    private BluetoothGattCallback bluetoothGattCallback;
+    Gson gson = new Gson();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +41,7 @@ public class DataActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
 
+
         name = (TextView) findViewById(R.id.nombre);
         address = (TextView) findViewById(R.id.direccion);
         if (savedInstanceState == null) {
@@ -32,14 +49,25 @@ public class DataActivity extends AppCompatActivity {
             if (extras == null) {
                 name.setText(null);
                 address.setText(null);
+                btle_device = null;
             } else {
-                name.setText(extras.getString("Name"));
-                address.setText(extras.getString("Address"));
+                String jDevice = (String) extras.get("Objeto");
+                btle_device = gson.fromJson(jDevice,BTLE_Device.class);
+                name.setText(btle_device.getRssi());
+
+//                BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address.toString());
+//                BluetoothGatt gatt = device.connectGatt(getApplicationContext(),
+//                        false, bluetoothGattCallback, TRANSPORT_LE);
             }
         } else {
             name.setText((String) savedInstanceState.getSerializable("Name"));
             address.setText((String) savedInstanceState.getSerializable("Address"));
+//            BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address.toString());
+//            BluetoothGatt gatt = device.connectGatt(getApplicationContext(),
+//                    false, bluetoothGattCallback, TRANSPORT_LE);
         }
+
+
     }
 
     @Override
