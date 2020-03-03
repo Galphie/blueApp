@@ -9,6 +9,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="399dp"
         android:layout_height="96dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         app:cardBackgroundColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +23,7 @@
             android:background="@color/colorAccent">
 
             <TextView
-                android:id="@+id/tv_name"
+                android:id="@+id/textView6"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
@@ -28,6 +31,16 @@
                 android:text="@string/device_name"
                 android:textColor="@color/cardview_light_background"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/empty_text"
+                android:textColor="@color/cardview_light_background"
+                app:layout_constraintStart_toStartOf="@+id/tv_macaddr"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
@@ -47,8 +60,8 @@
                 android:layout_marginTop="16dp"
                 android:text="@string/device_address"
                 android:textColor="@color/cardview_light_background"
-                app:layout_constraintStart_toStartOf="@+id/tv_name"
-                app:layout_constraintTop_toBottomOf="@+id/tv_name" />
+                app:layout_constraintStart_toStartOf="@+id/textView6"
+                app:layout_constraintTop_toBottomOf="@+id/textView6" />
 
             <TextView
                 android:id="@+id/tv_macaddr"

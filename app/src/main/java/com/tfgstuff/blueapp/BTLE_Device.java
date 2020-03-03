@@ -1,11 +1,10 @@
 package com.tfgstuff.blueapp;
 
 import android.bluetooth.BluetoothDevice;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-public class BTLE_Device {
+public class BTLE_Device implements Parcelable {
 
     private BluetoothDevice bluetoothDevice;
     private int rssi;
@@ -13,6 +12,23 @@ public class BTLE_Device {
     public BTLE_Device(BluetoothDevice bluetoothDevice) {
         this.bluetoothDevice = bluetoothDevice;
     }
+
+    protected BTLE_Device(Parcel in) {
+        bluetoothDevice = in.readParcelable(BluetoothDevice.class.getClassLoader());
+        rssi = in.readInt();
+    }
+
+    public static final Creator<BTLE_Device> CREATOR = new Creator<BTLE_Device>() {
+        @Override
+        public BTLE_Device createFromParcel(Parcel in) {
+            return new BTLE_Device(in);
+        }
+
+        @Override
+        public BTLE_Device[] newArray(int size) {
+            return new BTLE_Device[size];
+        }
+    };
 
     public String getAddress() {
         return bluetoothDevice.getAddress();
@@ -30,20 +46,16 @@ public class BTLE_Device {
         this.rssi = rssi;
     }
 
-    public JSONObject toJSON(){
-
-        JSONObject jsonObject= new JSONObject();
-        try {
-            jsonObject.put("bluetoothDevice", bluetoothDevice);
-            jsonObject.put("rssi", getRssi());
-
-            return jsonObject;
-        } catch (JSONException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            return null;
-        }
-
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeParcelable(bluetoothDevice, flags);
+        dest.writeInt(rssi);
+    }
 }
+
+

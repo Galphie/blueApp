@@ -21,8 +21,10 @@
 
     <Button
         android:id="@+id/btn_scan"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="50dp"
         android:text="@string/scan"
         app:layout_constraintBottom_toBottomOf="parent"

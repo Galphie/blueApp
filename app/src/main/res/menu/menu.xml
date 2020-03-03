@@ -9,10 +9,8 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/graphics"
+        android:iconTint="@color/cardview_light_background"
         android:title="@string/menu_graphics" />
-    <item
-        android:id="@+id/ajustes"
-        android:title="@string/menu_settings" />
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_exit_to_app_black_24dp"

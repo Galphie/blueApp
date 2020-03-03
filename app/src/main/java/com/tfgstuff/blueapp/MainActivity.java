@@ -1,15 +1,12 @@
 package com.tfgstuff.blueapp;
 
 import android.Manifest;
-import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
-import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -25,7 +22,6 @@ import androidx.core.content.ContextCompat;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static java.lang.String.*;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
 
@@ -51,15 +47,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener(){
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String mensaje = mBTDevicesArrayList.get(position).getName() +", " + mBTDevicesArrayList.get(position).getAddress();
                 Intent intent = new Intent(getApplicationContext(), DataActivity.class);
-
-                intent.putExtra("Name",mBTDevicesArrayList.get(position).getName());
-                intent.putExtra("Address",mBTDevicesArrayList.get(position).getAddress());
-//                intent.putExtra("Objeto", mBTDevicesArrayList.get(position).toJSON());
+                Utils.toast(getApplicationContext(), "Enviando dispositivo con dirección " + mBTDevicesArrayList.get(position).getAddress());
+                intent.putExtra("Objeto", mBTDevicesArrayList.get(position));
                 startActivity(intent);
             }
         });
@@ -110,10 +103,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private boolean checkCoarseLocationPermission(){
+    private boolean checkCoarseLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
                     REQUEST_ACCESS_COARSE_LOCATION);
             return false;
         } else {
@@ -121,15 +114,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int [] grantResults){
-        super.onRequestPermissionsResult(requestCode,permissions,grantResults);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
-        switch (requestCode){
-            case  REQUEST_ACCESS_COARSE_LOCATION:
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this,"Permiso concedido. Puedes escanear.",Toast.LENGTH_LONG).show();
+        switch (requestCode) {
+            case REQUEST_ACCESS_COARSE_LOCATION:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Permiso concedido. Puedes escanear.", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(this,"Permiso denegado. No puedes escanear.",Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, "Permiso denegado. No puedes escanear.", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -140,7 +133,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_scan:
-                if (checkCoarseLocationPermission()){
+                if (checkCoarseLocationPermission()) {
                     if (!mBTLeScanner.isScanning()) {
                         startScan();
                     } else {
@@ -152,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
-
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

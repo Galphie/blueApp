@@ -40,7 +40,7 @@ public class ListAdapter_BTLE_Devices extends ArrayAdapter<BTLE_Device> {
         if (name != null && name.length() > 0) {
             tv_name.setText(device.getName());
         } else {
-            tv_name.setText("Nombre desconocido");
+            tv_name.setText("Desconocido");
         }
 
         TextView tv_rssi = (TextView) convertView.findViewById(R.id.tv_rssi);
