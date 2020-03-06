@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">BlueApp</string>
-    <string name="temperatura">Temperatura</string>
-    <string name="co2_level">Nivel de CO2</string>
-    <string name="int_lum">Intensidad lumínica</string>
-    <string name="personas">Número de personas</string>
+    <string name="temperatura">Temperatura:</string>
+    <string name="co2_level">Nivel de CO2:</string>
+    <string name="int_lum">Intensidad lumínica:</string>
+    <string name="personas">Número de personas:</string>
     <string name="send">Enviar</string>
     <string name="empty_text">-</string>
     <string name="menu_devices">Dispositivos disponibles</string>
@@ -15,4 +15,8 @@
     <string name="device_name">Nombre:</string>
     <string name="device_address">Dirección:</string>
     <string name="log_out">Cerrar sesión</string>
+    <string name="disconnect">Desconectar</string>
+    <string name="choose_device">No tienes seleccionado ningún dispositivo</string>
+    <string name="status">Estado:</string>
+    <string name="read">Leer</string>
 </resources>

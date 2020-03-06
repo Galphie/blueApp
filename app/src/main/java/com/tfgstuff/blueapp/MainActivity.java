@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_ENABLE_BT = 1;
     private HashMap<String, BTLE_Device> mBTDevicesHashMap;
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
+    private ArrayList<BluetoothDevice> devicesArrayList;
     private ListAdapter_BTLE_Devices adapter;
     private Button btn_scan;
     private BroadcastReceiver_BTState mBTStateUpdateReceiver;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mBTLeScanner = new Scanner_BTLE(this, 7500, -75);
         mBTDevicesHashMap = new HashMap<>();
         mBTDevicesArrayList = new ArrayList<>();
+        devicesArrayList = new ArrayList<BluetoothDevice>();
         adapter = new ListAdapter_BTLE_Devices(this, R.layout.btle_device_list_item, mBTDevicesArrayList);
         ListView listView = new ListView(this);
         listView.setAdapter(adapter);
@@ -51,8 +53,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(getApplicationContext(), DataActivity.class);
-                Utils.toast(getApplicationContext(), "Enviando dispositivo con dirección " + mBTDevicesArrayList.get(position).getAddress());
-                intent.putExtra("Objeto", mBTDevicesArrayList.get(position));
+                intent.putExtra("Objeto", devicesArrayList.get(position));
                 startActivity(intent);
             }
         });
@@ -159,8 +160,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!mBTDevicesHashMap.containsKey(address)) {
             BTLE_Device btle_device = new BTLE_Device(device);
             btle_device.setRssi(new_rssi);
-            mBTDevicesHashMap.put(address, btle_device);
-            mBTDevicesArrayList.add(btle_device);
+            if(btle_device.getAddress().startsWith("A4:CF:12")){
+                mBTDevicesHashMap.put(address, btle_device);
+                mBTDevicesArrayList.add(btle_device);
+                devicesArrayList.add(device);
+            }
         } else {
             mBTDevicesHashMap.get(address).setRssi(new_rssi);
         }
