@@ -2,7 +2,10 @@ package com.tfgstuff.blueapp;
 
 import android.bluetooth.BluetoothDevice;
 import android.os.Parcel;
+import android.os.ParcelUuid;
 import android.os.Parcelable;
+
+import java.util.UUID;
 
 public class BTLE_Device implements Parcelable {
 
@@ -50,6 +53,8 @@ public class BTLE_Device implements Parcelable {
     public int describeContents() {
         return 0;
     }
+
+
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
