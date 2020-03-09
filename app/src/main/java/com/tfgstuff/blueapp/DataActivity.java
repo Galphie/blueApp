@@ -177,6 +177,7 @@ public class DataActivity extends AppCompatActivity {
             broadcastupdate("ACTION_DATA_AVAILABLE", characteristic);
         }
     };
+//   Pablo, calbo
 
     private void broadcastupdate(final String action, final BluetoothGattCharacteristic characteristic) {
         final Intent intent = new Intent(action);
