@@ -3,10 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/graphics"
-        android:icon="@drawable/ic_insert_chart_black_24dp"
-        android:iconTint="@color/cardview_light_background"
-        android:title="@string/menu_graphics"
+        android:id="@+id/logout"
+        android:icon="@drawable/ic_exit_to_app_black_24dp"
+        android:title="@string/log_out"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/devices"
@@ -14,8 +13,7 @@
         android:title="@string/menu_devices"
         app:showAsAction="always" />
     <item
-        android:id="@+id/logout"
-        android:icon="@drawable/ic_exit_to_app_black_24dp"
-        android:title="@string/log_out"
-        app:showAsAction="ifRoom" />
+        android:id="@+id/graphics"
+        android:iconTint="@color/cardview_light_background"
+        android:title="@string/menu_graphics" />
 </menu>
