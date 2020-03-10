@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -38,6 +40,8 @@ public class DataActivity extends AppCompatActivity {
     private Button button, button2;
 
     private static boolean connected;
+    private static boolean actualizando = false;
+    private static ArrayList<Integer> datos = new ArrayList<Integer>();
     private static String espData = "";
     private BTLE_Device btle_device;
     private BluetoothDevice device;
@@ -45,6 +49,7 @@ public class DataActivity extends AppCompatActivity {
     private BluetoothGattCharacteristic characteristic;
     private BluetoothGatt mBluetoothGatt;
     private static String MAC_ADDRESS = "";
+    int count = 0;
 
 
     @Override
@@ -71,6 +76,7 @@ public class DataActivity extends AppCompatActivity {
         button2.setVisibility(View.INVISIBLE);
         name = (TextView) findViewById(R.id.nombre);
         address = (TextView) findViewById(R.id.direccion);
+
     }
 
     protected void onResume() {
@@ -91,12 +97,14 @@ public class DataActivity extends AppCompatActivity {
             status.setText("Conectado");
             status.setTextColor(Color.GREEN);
 
+            mostrarDatos();
         }
 
         button.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (connected) {
                     mBluetoothGatt.disconnect();
+                    connected = false;
                     button.setText("Conectar de nuevo");
                     status.setText("Desconectado");
                     status.setTextColor(Color.RED);
@@ -111,21 +119,52 @@ public class DataActivity extends AppCompatActivity {
 
         button2.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                mostrarDatos(espData);
+                if (actualizando) {
+                    button2.setText("Actualizar");
+                    actualizando = false;
+                } else {
+                    mostrarDatos();
+                    button2.setText("Detener");
+                    actualizando = true;
+                }
+
             }
         });
     }
 
-    public void mostrarDatos(String sDatos) {
-        String[] datosStr = sDatos.split("/");
-        int[] datos = new int[datosStr.length];
-        for (int i = 0; i < datos.length; i++) {
-            datos[i] = Integer.parseInt(datosStr[i]);
+    public void mostrarDatos() {
+
+        if (!datos.isEmpty() || !connected) {
+            datos.clear();
+            Log.i("Array: ", String.valueOf(datos.size()));
+            temperature.setText(R.string.empty_text);
+            iLum.setText(R.string.empty_text);
+            co2.setText(R.string.empty_text);
+            people.setText(R.string.empty_text);
         }
-        temperature.setText((datos[0]) + " ºC");
-        iLum.setText(datos[1] + " lux");
-        co2.setText(datos[2] + " ppm");
-        people.setText(datos[3] + " personas");
+        try {
+            if (espData.equals("")) {
+                throw new ArrayIndexOutOfBoundsException();
+            } else if (connected) {
+                datos = datosToList(espData);
+                temperature.setText((datos.get(0)) + " ºC");
+                iLum.setText(datos.get(1) + " lux");
+                co2.setText(datos.get(2) + " ppm");
+                people.setText(datos.get(3) + " personas");
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            Utils.toast(getApplicationContext(), "El dispositivo " + device.getName() + " no está enviando datos.");
+            try {
+                Thread.sleep(3000);
+            } catch (InterruptedException ex) {
+                ex.printStackTrace();
+            }
+        }
+        count++;
+        Log.i("Actualizado: ", String.valueOf(count));
+        refresh(1000);
+
+
     }
 
     public void connect() {
@@ -211,5 +250,24 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
+    private void refresh(int milliseconds) {
+        final Handler handler = new Handler();
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                mostrarDatos();
+            }
+        };
+        handler.postDelayed(runnable, milliseconds);
+    }
+
+    public static ArrayList<Integer> datosToList(String sDatos) {
+        String[] strings = sDatos.split("/");
+        ArrayList<Integer> intArrayList = new ArrayList<Integer>();
+        for (int i = 0; i < strings.length; i++) {
+            intArrayList.add(Integer.parseInt(strings[i]));
+        }
+        return intArrayList;
+    }
 
 }
