@@ -3,16 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/devices"
+        android:icon="@android:drawable/stat_sys_data_bluetooth"
+        android:title="@string/menu_devices"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/graphics"
         android:icon="@drawable/ic_insert_chart_black_24dp"
         android:iconTint="@color/cardview_light_background"
         android:title="@string/menu_graphics"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/devices"
-        android:icon="@android:drawable/stat_sys_data_bluetooth"
-        android:title="@string/menu_devices"
-        app:showAsAction="always" />
     <item
         android:id="@+id/logout"
         android:icon="@drawable/ic_exit_to_app_black_24dp"
