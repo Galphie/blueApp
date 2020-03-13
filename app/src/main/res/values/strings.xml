@@ -19,4 +19,10 @@
     <string name="choose_device">No tienes seleccionado ningún dispositivo</string>
     <string name="status">Estado:</string>
     <string name="read">Leer</string>
+    <string name="yes">Sí</string>
+    <string name="no">No</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="confirm_connection">Pruebita</string>
 </resources>

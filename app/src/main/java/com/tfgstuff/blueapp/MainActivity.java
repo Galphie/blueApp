@@ -18,6 +18,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public final static String TAG = MainActivity.class.getSimpleName();
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 11;
     public static final int REQUEST_ENABLE_BT = 1;
+    DialogFragment connectionDialog;
     private HashMap<String, BTLE_Device> mBTDevicesHashMap;
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ArrayList<BluetoothDevice> devicesArrayList;
@@ -55,6 +57,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(getApplicationContext(), DataActivity.class);
                 intent.putExtra("Objeto", devicesArrayList.get(position));
                 startActivity(intent);
+
             }
         });
         ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
@@ -160,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!mBTDevicesHashMap.containsKey(address)) {
             BTLE_Device btle_device = new BTLE_Device(device);
             btle_device.setRssi(new_rssi);
-            if(btle_device.getAddress().startsWith("A4:CF:12")){
+            if (btle_device.getAddress().startsWith("A4:CF:12")) {
                 mBTDevicesHashMap.put(address, btle_device);
                 mBTDevicesArrayList.add(btle_device);
                 devicesArrayList.add(device);
@@ -187,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBTLeScanner.stop();
     }
+
 }
 
 

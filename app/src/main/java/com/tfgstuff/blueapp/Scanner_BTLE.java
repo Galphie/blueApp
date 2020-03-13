@@ -6,6 +6,8 @@ import android.bluetooth.BluetoothManager;
 import android.content.Context;
 import android.os.Handler;
 
+import com.google.android.material.snackbar.Snackbar;
+
 public class Scanner_BTLE {
 
     private MainActivity ma;
@@ -49,13 +51,10 @@ public class Scanner_BTLE {
 
     private void scanLeDevice(final boolean enable) {
         if (enable && !mScanning) {
-            Utils.toast(ma.getApplication(), "Escaneando BLE...");
 
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
-                    Utils.toast(ma.getApplicationContext(), "Deteniendo escaneo...");
-
                     mScanning = false;
                     mBluetoothAdapter.stopLeScan(mLeScanCallback);
 

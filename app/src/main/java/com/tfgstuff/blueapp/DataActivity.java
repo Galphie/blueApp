@@ -1,6 +1,5 @@
 package com.tfgstuff.blueapp;
 
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGatt;
 import android.bluetooth.BluetoothGattCallback;
@@ -24,40 +23,38 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+
+import com.google.android.material.snackbar.Snackbar;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.tfgstuff.blueapp.R.layout.activity_data;
+
 public class DataActivity extends AppCompatActivity {
 
     private static final int GATT_INTERNAL_ERROR = 129;
-    private static final String S_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
-    private static final String C_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
-    private static final String D_UUID = "00002902-0000-1000-8000-00805f9b34fb";
+    private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
+    private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
+    private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
     private TextView name, address, choose, status, temperature, co2, iLum, people;
     private CardView dataCard;
-    private Button button;
+    private Button connectButton;
 
     private static boolean connected;
-    private static boolean actualizando = false;
     private static ArrayList<Integer> datos = new ArrayList<Integer>();
-    private static String espData = "";
-    private BTLE_Device btle_device;
-    private BluetoothDevice device;
-    private BluetoothAdapter mBluetoothAdapter;
-    private BluetoothGatt mBluetoothGatt;
+    private static String data = "";
+    private BluetoothDevice bluetoothDevice;
+    private BluetoothGatt bluetoothGatt;
     boolean enabled = true;
-    private static String MAC_ADDRESS = "";
     int count = 0;
-    int charCount = 0;
-    int aux = charCount;
-    int backCounter = 0;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_data);
+        setContentView(activity_data);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -72,8 +69,8 @@ public class DataActivity extends AppCompatActivity {
         status = (TextView) findViewById(R.id.status);
         dataCard = (CardView) findViewById(R.id.data_card);
         dataCard.setVisibility(View.INVISIBLE);
-        button = (Button) findViewById(R.id.button);
-        button.setVisibility(View.INVISIBLE);
+        connectButton = (Button) findViewById(R.id.button);
+        connectButton.setVisibility(View.INVISIBLE);
         name = (TextView) findViewById(R.id.nombre);
         address = (TextView) findViewById(R.id.direccion);
 
@@ -82,35 +79,36 @@ public class DataActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         if (getIntent().getParcelableExtra("Objeto") != null) {
-            device = getIntent().getParcelableExtra("Objeto");
+            bluetoothDevice = getIntent().getParcelableExtra("Objeto");
 
             choose.setVisibility(View.INVISIBLE);
             dataCard.setVisibility(View.VISIBLE);
-            button.setVisibility(View.VISIBLE);
-            name.setText(device.getName());
-            address.setText(device.getAddress());
-            MAC_ADDRESS = device.getAddress();
+            connectButton.setVisibility(View.VISIBLE);
+            name.setText(bluetoothDevice.getName());
+            address.setText(bluetoothDevice.getAddress());
 
             connect();
 
+
             status.setText("Conectado");
             status.setTextColor(Color.GREEN);
-            mostrarDatos();
+            showData();
 
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        connectButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (connected) {
-                    mBluetoothGatt.disconnect();
+                    bluetoothGatt.disconnect();
                     connected = false;
                     status.setText("Desconectado");
                     status.setTextColor(Color.RED);
-                    button.setText("Conectar de nuevo");
+                    connectButton.setText("Conectar de nuevo");
+
 
                 } else {
                     connect();
-                    button.setText("Desconectar");
+                    connectButton.setText("Desconectar");
                     status.setText("Conectado");
                     status.setTextColor(Color.GREEN);
                 }
@@ -119,7 +117,7 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
-    public void mostrarDatos() {
+    public void showData() {
 
         if (!datos.isEmpty() || !connected) {
             datos.clear();
@@ -128,35 +126,33 @@ public class DataActivity extends AppCompatActivity {
             iLum.setText(R.string.empty_text);
             co2.setText(R.string.empty_text);
             people.setText(R.string.empty_text);
+
         }
         try {
-            if (espData.equals("")) {
+            if (data.equals("")) {
                 throw new ArrayIndexOutOfBoundsException();
             } else if (connected) {
-                datos = datosToList(espData);
+                datos = characteristicToList(data);
                 temperature.setText((datos.get(0)) + " ºC");
                 iLum.setText(datos.get(1) + " lux");
                 co2.setText(datos.get(2) + " ppm");
                 people.setText(datos.get(3) + " personas");
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            Utils.toast(getApplicationContext(), "El dispositivo " + device.getName() + " no está enviando datos.");
+            Utils.toast(getApplicationContext(),
+                    "El dispositivo " + bluetoothDevice.getName() + " no está enviando datos.");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException ex) {
                 ex.printStackTrace();
             }
         }
-        count++;
-        Log.i("Actualizado: ", String.valueOf(count));
-        Log.i("Mensaje:", espData);
-        checkChanges(1000);
-
+        refresh(1000);
 
     }
 
     public void connect() {
-        mBluetoothGatt = device.connectGatt(this, false, mGattCallback);
+        bluetoothGatt = bluetoothDevice.connectGatt(this, false, mGattCallback);
     }
 
     private final BluetoothGattCallback mGattCallback = new BluetoothGattCallback() {
@@ -174,18 +170,17 @@ public class DataActivity extends AppCompatActivity {
         @Override
         public void onServicesDiscovered(BluetoothGatt gatt, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
-                final List<BluetoothGattService> services = mBluetoothGatt.getServices();
+                final List<BluetoothGattService> services = bluetoothGatt.getServices();
                 if (services != null) {
-                    BluetoothGattCharacteristic characteristic = mBluetoothGatt.getService(UUID.fromString(S_UUID)).getCharacteristic(UUID.fromString(C_UUID));
-
-                    mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
-
+                    BluetoothGattService service = bluetoothGatt.getService(UUID.fromString(SERVICE_UUID));
+                    BluetoothGattCharacteristic characteristic = service
+                            .getCharacteristic(UUID.fromString(CHARACTERISTIC_UUID));
+                    bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
                     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
-                            UUID.fromString(D_UUID));
+                            UUID.fromString(DESCRIPTOR_UUID));
                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
-                    mBluetoothGatt.writeDescriptor(descriptor);
-
-                    mBluetoothGatt.readCharacteristic(characteristic);
+                    bluetoothGatt.writeDescriptor(descriptor);
+                    bluetoothGatt.readCharacteristic(characteristic);
                 }
             }
         }
@@ -194,10 +189,9 @@ public class DataActivity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 byte[] data = characteristic.getValue();
-                espData = new String(data);
-
+                DataActivity.data = new String(data);
             } else if (status == GATT_INTERNAL_ERROR) {
-                Log.e("Error de conexión", "Service discovery failed");
+                Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
                 return;
             }
@@ -205,13 +199,9 @@ public class DataActivity extends AppCompatActivity {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-            charCount++;
-            Log.i("Característica cambia:", charCount + " vez.");
-            mBluetoothGatt.readCharacteristic(characteristic);
-
+            bluetoothGatt.readCharacteristic(characteristic);
         }
     };
-//   Pablo, calbo
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -239,19 +229,19 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
-    private void checkChanges(int milliseconds) {
+    private void refresh(int milliseconds) {
         final Handler handler = new Handler();
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                mostrarDatos();
+                showData();
             }
         };
         handler.postDelayed(runnable, milliseconds);
     }
 
-    public static ArrayList<Integer> datosToList(String sDatos) {
-        String[] strings = sDatos.split("/");
+    public static ArrayList<Integer> characteristicToList(String dataString) {
+        String[] strings = dataString.split("/");
         ArrayList<Integer> intArrayList = new ArrayList<Integer>();
         for (int i = 0; i < strings.length; i++) {
             intArrayList.add(Integer.parseInt(strings[i]));
