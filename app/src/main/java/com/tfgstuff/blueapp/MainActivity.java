@@ -24,12 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, AdapterView.OnItemClickListener, OnConnectionDialogListener {
 
-    public final static String TAG = MainActivity.class.getSimpleName();
     public static final int REQUEST_ACCESS_COARSE_LOCATION = 11;
     public static final int REQUEST_ENABLE_BT = 1;
     DialogFragment connectionDialog;
+    int choice;
     private HashMap<String, BTLE_Device> mBTDevicesHashMap;
     private ArrayList<BTLE_Device> mBTDevicesArrayList;
     private ArrayList<BluetoothDevice> devicesArrayList;
@@ -54,10 +54,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(getApplicationContext(), DataActivity.class);
-                intent.putExtra("Objeto", devicesArrayList.get(position));
-                startActivity(intent);
-
+                choice = position;
+                connectionDialog = new OnConnectionDialog();
+                connectionDialog.show(getSupportFragmentManager(), "Diálogo confirmación");
             }
         });
         ((ScrollView) findViewById(R.id.scrollView)).addView(listView);
@@ -163,11 +162,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         if (!mBTDevicesHashMap.containsKey(address)) {
             BTLE_Device btle_device = new BTLE_Device(device);
             btle_device.setRssi(new_rssi);
-            if (btle_device.getAddress().startsWith("A4:CF:12")) {
-                mBTDevicesHashMap.put(address, btle_device);
-                mBTDevicesArrayList.add(btle_device);
-                devicesArrayList.add(device);
-            }
+            //if (btle_device.getAddress().startsWith("A4:CF:12")) {
+            mBTDevicesHashMap.put(address, btle_device);
+            mBTDevicesArrayList.add(btle_device);
+            devicesArrayList.add(device);
+            Utils.toast(getApplicationContext(), "Encontrados " + String.valueOf(devicesArrayList.size()) + " dispositivos.");
+            //}
         } else {
             mBTDevicesHashMap.get(address).setRssi(new_rssi);
         }
@@ -179,6 +179,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         mBTDevicesArrayList.clear();
         mBTDevicesHashMap.clear();
+        devicesArrayList.clear();
 
         adapter.notifyDataSetChanged();
 
@@ -187,10 +188,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void stopScan() {
         btn_scan.setText("Escanear de nuevo");
-
         mBTLeScanner.stop();
     }
 
+    @Override
+    public void onConfirm() {
+        Intent intent = new Intent(getApplicationContext(), DataActivity.class);
+        intent.putExtra("Objeto", devicesArrayList.get(choice));
+        startActivity(intent);
+        finish();
+    }
 }
 
 

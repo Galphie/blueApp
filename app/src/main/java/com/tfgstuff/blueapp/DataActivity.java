@@ -9,6 +9,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -22,9 +23,6 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
-
-
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +90,7 @@ public class DataActivity extends AppCompatActivity {
 
             status.setText("Conectado");
             status.setTextColor(Color.GREEN);
-            showData();
+//            showData();
 
         }
 
@@ -117,11 +115,17 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
+    public void onPause() {
+        super.onPause();
+        if(bluetoothDevice!=null){
+            bluetoothGatt.disconnect();
+        }
+    }
+
     public void showData() {
 
         if (!datos.isEmpty() || !connected) {
             datos.clear();
-            Log.i("Array: ", String.valueOf(datos.size()));
             temperature.setText(R.string.empty_text);
             iLum.setText(R.string.empty_text);
             co2.setText(R.string.empty_text);
@@ -147,7 +151,7 @@ public class DataActivity extends AppCompatActivity {
                 ex.printStackTrace();
             }
         }
-        refresh(1000);
+//        refresh(1000);
 
     }
 
@@ -190,6 +194,12 @@ public class DataActivity extends AppCompatActivity {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 byte[] data = characteristic.getValue();
                 DataActivity.data = new String(data);
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        showData();
+                    }
+                });
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
@@ -199,6 +209,7 @@ public class DataActivity extends AppCompatActivity {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
+
             bluetoothGatt.readCharacteristic(characteristic);
         }
     };
@@ -241,8 +252,8 @@ public class DataActivity extends AppCompatActivity {
     }
 
     public static ArrayList<Integer> characteristicToList(String dataString) {
-        String[] strings = dataString.split("/");
         ArrayList<Integer> intArrayList = new ArrayList<Integer>();
+        String[] strings = dataString.split("/");
         for (int i = 0; i < strings.length; i++) {
             intArrayList.add(Integer.parseInt(strings[i]));
         }
