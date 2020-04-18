@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             mBTDevicesHashMap.put(address, btle_device);
             mBTDevicesArrayList.add(btle_device);
             devicesArrayList.add(device);
-            Utils.toast(getApplicationContext(), "Encontrados " + String.valueOf(devicesArrayList.size()) + " dispositivos.");
+            Utils.toast(getApplicationContext(), "Encontrados " + devicesArrayList.size() + " dispositivos.");
             //}
         } else {
             mBTDevicesHashMap.get(address).setRssi(new_rssi);

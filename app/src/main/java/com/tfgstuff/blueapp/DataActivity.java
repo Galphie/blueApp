@@ -9,9 +9,7 @@ import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -46,7 +44,6 @@ public class DataActivity extends AppCompatActivity {
     private BluetoothDevice bluetoothDevice;
     private BluetoothGatt bluetoothGatt;
     boolean enabled = true;
-    int count = 0;
 
 
     @Override
@@ -87,10 +84,8 @@ public class DataActivity extends AppCompatActivity {
 
             connect();
 
-
             status.setText("Conectado");
             status.setTextColor(Color.GREEN);
-//            showData();
 
         }
 
@@ -115,11 +110,14 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
-    public void onPause() {
+    protected void onPause() {
         super.onPause();
-        if(bluetoothDevice!=null){
-            bluetoothGatt.disconnect();
-        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        bluetoothGatt.disconnect();
     }
 
     public void showData() {
@@ -151,8 +149,6 @@ public class DataActivity extends AppCompatActivity {
                 ex.printStackTrace();
             }
         }
-//        refresh(1000);
-
     }
 
     public void connect() {
@@ -209,7 +205,6 @@ public class DataActivity extends AppCompatActivity {
 
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic) {
-
             bluetoothGatt.readCharacteristic(characteristic);
         }
     };
@@ -238,17 +233,6 @@ public class DataActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
-    }
-
-    private void refresh(int milliseconds) {
-        final Handler handler = new Handler();
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                showData();
-            }
-        };
-        handler.postDelayed(runnable, milliseconds);
     }
 
     public static ArrayList<Integer> characteristicToList(String dataString) {
