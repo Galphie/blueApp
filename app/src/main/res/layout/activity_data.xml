@@ -117,7 +117,7 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="32dp"
                 android:text="@string/personas"
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 app:layout_constraintEnd_toEndOf="@+id/textView8"
@@ -159,6 +159,31 @@
                 android:textColor="@color/common_google_signin_btn_text_dark_focused"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView9"
                 app:layout_constraintStart_toStartOf="@+id/co2" />
+
+            <ImageView
+                android:id="@+id/tempAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/lumAlert"
+                app:layout_constraintTop_toTopOf="@+id/temperature"
+                app:srcCompat="@drawable/ic_done_black_24dp" />
+
+            <ImageView
+                android:id="@+id/lumAlert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="@+id/co2Alert"
+                app:layout_constraintTop_toTopOf="@+id/iLum"
+                app:srcCompat="@drawable/ic_done_black_24dp" />
+
+            <ImageView
+                android:id="@+id/co2Alert"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                app:layout_constraintStart_toEndOf="@+id/co2"
+                app:layout_constraintTop_toTopOf="@+id/co2"
+                app:srcCompat="@drawable/ic_done_black_24dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

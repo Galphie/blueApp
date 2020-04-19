@@ -16,6 +16,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +36,7 @@ public class DataActivity extends AppCompatActivity {
     private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
     private TextView name, address, choose, status, temperature, co2, iLum, people;
+    private ImageView tempAlert, lumAlert, co2Alert;
     private CardView dataCard;
     private Button connectButton;
 
@@ -62,6 +64,12 @@ public class DataActivity extends AppCompatActivity {
         iLum = (TextView) findViewById(R.id.iLum);
         people = (TextView) findViewById(R.id.people);
         status = (TextView) findViewById(R.id.status);
+        tempAlert = (ImageView) findViewById(R.id.tempAlert);
+        lumAlert = (ImageView) findViewById(R.id.lumAlert);
+        co2Alert = (ImageView) findViewById(R.id.co2Alert);
+        tempAlert.setVisibility(View.INVISIBLE);
+        lumAlert.setVisibility(View.INVISIBLE);
+        co2Alert.setVisibility(View.INVISIBLE);
         dataCard = (CardView) findViewById(R.id.data_card);
         dataCard.setVisibility(View.INVISIBLE);
         connectButton = (Button) findViewById(R.id.button);
@@ -128,17 +136,57 @@ public class DataActivity extends AppCompatActivity {
             iLum.setText(R.string.empty_text);
             co2.setText(R.string.empty_text);
             people.setText(R.string.empty_text);
+            lumAlert.setVisibility(View.INVISIBLE);
+            co2Alert.setVisibility(View.INVISIBLE);
+            tempAlert.setVisibility(View.INVISIBLE);
 
         }
         try {
             if (data.equals("")) {
                 throw new ArrayIndexOutOfBoundsException();
             } else if (connected) {
-                datos = characteristicToList(data);
-                temperature.setText((datos.get(0)) + " ºC");
-                iLum.setText(datos.get(1) + " lux");
-                co2.setText(datos.get(2) + " ppm");
-                people.setText(datos.get(3) + " personas");
+                String[] valores = data.split("/");
+                for (int i = 0; i < valores.length; i++) {
+                    if (valores[i].startsWith("T")) {
+                        valores[i] = valores[i].replace("T", "");
+                        temperature.setText(valores[i]);
+                        tempAlert.setVisibility(View.VISIBLE);
+                        if (Integer.parseInt(valores[i]) >= 37) {
+                            tempAlert.setImageResource(R.drawable.ic_brightness_high_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) >= 30 && Integer.parseInt(valores[i]) < 37) {
+                            tempAlert.setImageResource(R.drawable.ic_brightness_warning);
+                        } else if (Integer.parseInt(valores[i]) >= 20 && Integer.parseInt(valores[i]) < 30) {
+                            tempAlert.setImageResource(R.drawable.ic_done_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) <20){
+                            tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
+                        }
+                    } else if (valores[i].startsWith("L")) {
+                        valores[i] = valores[i].replace("L", "");
+                        iLum.setText(valores[i]);
+                        lumAlert.setVisibility(View.VISIBLE);
+                        if (Integer.parseInt(valores[i]) >= 1100) {
+                            lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) >= 950 && Integer.parseInt(valores[i]) < 1100) {
+                            lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) < 950) {
+                            lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
+                        }
+                    } else if (valores[i].startsWith("C")) {
+                        valores[i] = valores[i].replace("C", "");
+                        co2.setText(valores[i]);
+                        co2Alert.setVisibility(View.VISIBLE);
+                        if (Integer.parseInt(valores[i]) >= 1000) {
+                            co2Alert.setImageResource(R.drawable.ic_wb_cloudy_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) >= 900 && Integer.parseInt(valores[i]) < 1000) {
+                            co2Alert.setImageResource(R.drawable.ic_warning_black_24dp);
+                        } else if (Integer.parseInt(valores[i]) < 900) {
+                            co2Alert.setImageResource(R.drawable.ic_done_black_24dp);
+                        }
+                    } else if (valores[i].startsWith("P")) {
+                        valores[i] = valores[i].replace("P", "");
+                        people.setText(valores[i]);
+                    }
+                }
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             Utils.toast(getApplicationContext(),
@@ -233,15 +281,6 @@ public class DataActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
 
-    }
-
-    public static ArrayList<Integer> characteristicToList(String dataString) {
-        ArrayList<Integer> intArrayList = new ArrayList<Integer>();
-        String[] strings = dataString.split("/");
-        for (int i = 0; i < strings.length; i++) {
-            intArrayList.add(Integer.parseInt(strings[i]));
-        }
-        return intArrayList;
     }
 
 }
