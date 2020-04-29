@@ -13,11 +13,19 @@ import androidx.fragment.app.DialogFragment;
 public class OnConnectionDialog extends DialogFragment {
 
     OnConnectionDialogListener mListener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setMessage(R.string.confirm_connection)
+        Bundle mArgs = getArguments();
+        String name = mArgs.getString("name");
+        if(name.equals("Desconocido")){
+            name = "dispositivo desconocido";
+        }
+        String address = mArgs.getString("address");
+        builder.setMessage("¿Conectarse a " + name + "?\n" +
+                "(" + address + ")")
                 .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         dialog.dismiss();

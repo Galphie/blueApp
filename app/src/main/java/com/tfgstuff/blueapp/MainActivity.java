@@ -56,6 +56,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 choice = position;
                 connectionDialog = new OnConnectionDialog();
+                Bundle args = new Bundle();
+                args.putString("address", devicesArrayList.get(choice).getAddress());
+                if (devicesArrayList.get(choice).getName() == null) {
+                    args.putString("name", "Desconocido");
+                } else {
+                    args.putString("name", devicesArrayList.get(choice).getName());
+                }
+                connectionDialog.setArguments(args);
                 connectionDialog.show(getSupportFragmentManager(), "Diálogo confirmación");
             }
         });
