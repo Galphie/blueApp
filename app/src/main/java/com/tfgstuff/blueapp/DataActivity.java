@@ -23,7 +23,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -32,6 +37,8 @@ import static com.tfgstuff.blueapp.R.layout.activity_data;
 public class DataActivity extends AppCompatActivity {
 
     private static final int GATT_INTERNAL_ERROR = 129;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
+    DatabaseReference dataRef = database.getReference("Datos");
     private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
@@ -39,10 +46,11 @@ public class DataActivity extends AppCompatActivity {
     private ImageView tempAlert, lumAlert, co2Alert;
     private CardView dataCard;
     private Button connectButton;
-
     private static boolean connected;
     private static ArrayList<Integer> datos = new ArrayList<Integer>();
     private static String data = "";
+    private Datos dat = new Datos();
+    public static String degrees,dioxide,light,person;
     private BluetoothDevice bluetoothDevice;
     private BluetoothGatt bluetoothGatt;
     boolean enabled = true;
@@ -76,6 +84,9 @@ public class DataActivity extends AppCompatActivity {
         connectButton.setVisibility(View.INVISIBLE);
         name = (TextView) findViewById(R.id.nombre);
         address = (TextView) findViewById(R.id.direccion);
+
+        Date currentTime = Calendar.getInstance().getTime();
+
 
     }
 
@@ -149,42 +160,46 @@ public class DataActivity extends AppCompatActivity {
                 for (int i = 0; i < valores.length; i++) {
                     if (valores[i].startsWith("T")) {
                         valores[i] = valores[i].replace("T", "");
-                        temperature.setText(valores[i]);
+                        dat.setTemperature(valores[i]);
+                        temperature.setText(dat.getStringTemperature());
                         tempAlert.setVisibility(View.VISIBLE);
-                        if (Integer.parseInt(valores[i]) >= 37) {
+                        if (dat.getTemperature() >= 37) {
                             tempAlert.setImageResource(R.drawable.ic_brightness_high_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) >= 30 && Integer.parseInt(valores[i]) < 37) {
+                        } else if (dat.getTemperature() >= 30 && dat.getTemperature() < 37) {
                             tempAlert.setImageResource(R.drawable.ic_brightness_warning);
-                        } else if (Integer.parseInt(valores[i]) >= 20 && Integer.parseInt(valores[i]) < 30) {
+                        } else if (dat.getTemperature() >= 20 && dat.getTemperature() < 30) {
                             tempAlert.setImageResource(R.drawable.ic_done_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) <20){
+                        } else if (dat.getTemperature() < 20) {
                             tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
                         }
                     } else if (valores[i].startsWith("L")) {
                         valores[i] = valores[i].replace("L", "");
-                        iLum.setText(valores[i]);
+                        dat.setLux(valores[i]);
+                        iLum.setText(dat.getStringLux());
                         lumAlert.setVisibility(View.VISIBLE);
-                        if (Integer.parseInt(valores[i]) >= 1100) {
+                        if (dat.getLux() >= 1100) {
                             lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) >= 950 && Integer.parseInt(valores[i]) < 1100) {
+                        } else if (dat.getLux() >= 950 && dat.getLux() < 1100) {
                             lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) < 950) {
+                        } else if (dat.getLux() < 950) {
                             lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
                         }
                     } else if (valores[i].startsWith("C")) {
                         valores[i] = valores[i].replace("C", "");
-                        co2.setText(valores[i]);
+                        dat.setCo2(valores[i]);
+                        co2.setText(dat.getStringCo2());
                         co2Alert.setVisibility(View.VISIBLE);
-                        if (Integer.parseInt(valores[i]) >= 1000) {
+                        if (dat.getCo2() >= 1000) {
                             co2Alert.setImageResource(R.drawable.ic_wb_cloudy_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) >= 900 && Integer.parseInt(valores[i]) < 1000) {
+                        } else if (dat.getCo2() >= 900 && dat.getCo2() < 1000) {
                             co2Alert.setImageResource(R.drawable.ic_warning_black_24dp);
-                        } else if (Integer.parseInt(valores[i]) < 900) {
+                        } else if (dat.getCo2() < 900) {
                             co2Alert.setImageResource(R.drawable.ic_done_black_24dp);
                         }
                     } else if (valores[i].startsWith("P")) {
                         valores[i] = valores[i].replace("P", "");
-                        people.setText(valores[i]);
+                        dat.setPeople(valores[i]);
+                        people.setText(dat.getStringPeople());
                     }
                 }
             }
@@ -283,4 +298,7 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
+    public void register(View view) {
+
+    }
 }
