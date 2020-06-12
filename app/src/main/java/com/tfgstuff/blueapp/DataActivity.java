@@ -283,7 +283,8 @@ public class DataActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.devices:
-                Intent dev = new Intent(this, MainActivity.class);
+//                Intent dev = new Intent(this, MainActivity.class);
+                Intent dev = new Intent(this, ScanActivity.class);
                 startActivity(dev);
                 return true;
             case R.id.graphics:

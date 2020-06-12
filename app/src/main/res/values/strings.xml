@@ -22,4 +22,9 @@
     <string name="yes">Sí</string>
     <string name="no">No</string>
     <string name="confirm_connection">¿Conectarse al dispositivo seleccionado?</string>
+    <string name="coarse_location_access_title">Esta aplicación necesita acceso a la localización</string>
+    <string name="coarse_location_access_message">Por favor, conceda el acceso a la ubicación para que esta aplicación pueda detectar los periféricos.</string>
+    <string name="accept">Aceptar</string>
+    <string name="concede">Conceder</string>
+    <string name="device_rssi">Rssi:</string>
 </resources>
