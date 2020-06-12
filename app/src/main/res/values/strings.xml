@@ -27,4 +27,6 @@
     <string name="accept">Aceptar</string>
     <string name="concede">Conceder</string>
     <string name="device_rssi">Rssi:</string>
+    <string name="cancel">Cancelar</string>
+    <string name="unknown_device">Desconocido</string>
 </resources>

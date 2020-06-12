@@ -92,8 +92,8 @@ public class DataActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        if (getIntent().getParcelableExtra("Objeto") != null) {
-            bluetoothDevice = getIntent().getParcelableExtra("Objeto");
+        if (getIntent().getParcelableExtra("object") != null) {
+            bluetoothDevice = getIntent().getParcelableExtra("object");
 
             choose.setVisibility(View.INVISIBLE);
             dataCard.setVisibility(View.VISIBLE);

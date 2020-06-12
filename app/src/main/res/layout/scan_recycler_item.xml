@@ -9,9 +9,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="1dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="7dp"
+        android:layout_marginBottom="8dp"
         app:cardBackgroundColor="@color/design_default_color_on_primary"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +28,7 @@
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/empty_text"
                 android:textColor="@color/design_default_color_on_secondary"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
                 app:layout_constraintStart_toStartOf="@+id/result_address" />
 
@@ -41,7 +40,7 @@
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/empty_text"
                 android:textColor="@color/design_default_color_on_secondary"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView13"
                 app:layout_constraintStart_toEndOf="@+id/textView13" />
 
@@ -53,7 +52,7 @@
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/empty_text"
                 android:textColor="@color/design_default_color_on_secondary"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView14"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -76,7 +75,7 @@
                 android:layout_marginTop="16dp"
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/device_name"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -89,7 +88,7 @@
                 android:layout_marginBottom="16dp"
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/device_address"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textView12"
@@ -102,7 +101,7 @@
                 android:layout_marginEnd="8dp"
                 android:fontFamily="@font/fira_sans"
                 android:text="@string/device_rssi"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 app:layout_constraintBaseline_toBaselineOf="@+id/textView12"
                 app:layout_constraintEnd_toStartOf="@+id/result_rssi" />

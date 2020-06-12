@@ -19,6 +19,8 @@ import android.view.View;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,7 +31,7 @@ import com.google.android.material.snackbar.Snackbar;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class ScanActivity extends AppCompatActivity {
+public class ScanActivity extends AppCompatActivity implements ResultsListAdapter.OnResultClickListener {
 
     private final static int REQUEST_ENABLE_BT = 1;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
@@ -100,46 +102,45 @@ public class ScanActivity extends AppCompatActivity {
         }
     }
 
-    private void scan(boolean enable) {
-        if (enable) {
-            new Handler().postDelayed(() -> {
+    private void stop() {
+        btScanner.stopScan(leScanCallback);
+    }
+
+    private void scan(final boolean enable) {
+        if (enable && !scanning) {
+            Handler handler = new Handler();
+            final Runnable runnable = () -> {
                 scanning = false;
                 Snackbar.make(parent, "Encontrados " + results.size() + " dispotivos.", BaseTransientBottomBar.LENGTH_LONG)
                         .setAction("", null)
+                        .setBackgroundTint(ResourcesCompat.getColor(ScanActivity.this.getResources(), R.color.colorPrimary, null))
                         .show();
                 startScanButton.setVisibility(View.VISIBLE);
                 stopScanButton.setVisibility(View.INVISIBLE);
                 AsyncTask.execute(() -> btScanner.stopScan(leScanCallback));
-            }, 7500);
+            };
+            handler.postDelayed(runnable, 7500);
             scanning = true;
             btScanner.startScan(leScanCallback);
         } else {
             scanning = false;
-            Snackbar.make(parent, "Encontrados " + results.size() + " dispotivos.", BaseTransientBottomBar.LENGTH_LONG)
-                    .setAction("", null)
-                    .show();
-            startScanButton.setVisibility(View.VISIBLE);
-            stopScanButton.setVisibility(View.INVISIBLE);
-            AsyncTask.execute(() -> btScanner.stopScan(leScanCallback));
+            btScanner.stopScan(leScanCallback);
         }
-    }
-
-    private void stop() {
-        scan(false);
     }
 
     private void initRecyclerView() {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        ResultsListAdapter adapter = new ResultsListAdapter(results);
+        ResultsListAdapter adapter = new ResultsListAdapter(results, this);
         recyclerView.setAdapter(adapter);
     }
 
-    private ScanCallback leScanCallback = new ScanCallback() {
+    private final ScanCallback leScanCallback = new ScanCallback() {
         @Override
         public void onScanResult(int callbackType, ScanResult result) {
             if (!devices.contains(result.getDevice()) && result.getRssi() > SIGNAL_STRENGTH) {
                 new Handler().post(() -> {
-                    Log.d("ScanActivity", "onScanResult: " + result.getDevice().getAddress());
+                    Log.d("ScanActivity", "onScanResult: "
+                            + result.getDevice().getAddress() + "\nNombre: " + result.getDevice().getName());
                     results.add(result);
                     devices.add(result.getDevice());
                     recyclerView.getAdapter().notifyDataSetChanged();
@@ -147,4 +148,22 @@ public class ScanActivity extends AppCompatActivity {
             }
         }
     };
+
+    @Override
+    public void onResultClick(int position) {
+        BluetoothDevice device = results.get(position).getDevice();
+        DialogFragment dialogFragment = new ConfirmActionDialog();
+        Bundle args = new Bundle();
+        args.putString("confirm_action_dialog_message",
+                "¿Conectar con el dispositivo con dirección " + device.getAddress() + "?");
+        args.putInt("type", ConfirmActionDialog.CONNECTION_CODE);
+        args.putParcelable("object", device);
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(), "Confirm connection");
+    }
+
+    @Override
+    public void onResultInfoClick(int position) {
+        Utils.toast(getApplicationContext(), "Información detallada del dispositivo");
+    }
 }
