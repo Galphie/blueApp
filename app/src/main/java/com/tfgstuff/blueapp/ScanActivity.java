@@ -98,6 +98,7 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
             stopScanButton.setVisibility(View.VISIBLE);
             devices.clear();
             results.clear();
+            recyclerView.getAdapter().notifyDataSetChanged();
             scan(true);
         }
     }
@@ -107,6 +108,7 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
     }
 
     private void scan(final boolean enable) {
+
         if (enable && !scanning) {
             Handler handler = new Handler();
             final Runnable runnable = () -> {

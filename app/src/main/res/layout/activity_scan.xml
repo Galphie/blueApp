@@ -39,5 +39,5 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/ic_baseline_bluetooth_disabled_24" />
+        app:srcCompat="@drawable/ic_baseline_bluetooth_connected_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>

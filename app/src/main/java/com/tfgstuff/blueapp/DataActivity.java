@@ -108,22 +108,20 @@ public class DataActivity extends AppCompatActivity {
 
         }
 
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (connected) {
-                    bluetoothGatt.disconnect();
-                    connected = false;
-                    status.setText("Desconectado");
-                    status.setTextColor(Color.RED);
-                    connectButton.setText("Conectar de nuevo");
+        connectButton.setOnClickListener(v -> {
+            if (connected) {
+                bluetoothGatt.disconnect();
+                connected = false;
+                status.setText("Desconectado");
+                status.setTextColor(Color.RED);
+                connectButton.setText("Conectar de nuevo");
 
 
-                } else {
-                    connect();
-                    connectButton.setText("Desconectar");
-                    status.setText("Conectado");
-                    status.setTextColor(Color.GREEN);
-                }
+            } else {
+                connect();
+                connectButton.setText("Desconectar");
+                status.setText("Conectado");
+                status.setTextColor(Color.GREEN);
             }
         });
 
@@ -253,12 +251,7 @@ public class DataActivity extends AppCompatActivity {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 byte[] data = characteristic.getValue();
                 DataActivity.data = new String(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showData();
-                    }
-                });
+                runOnUiThread(() -> showData());
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
