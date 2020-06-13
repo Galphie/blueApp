@@ -26,7 +26,6 @@ import androidx.cardview.widget.CardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -47,10 +46,7 @@ public class DataActivity extends AppCompatActivity {
     private CardView dataCard;
     private Button connectButton;
     private static boolean connected;
-    private static ArrayList<Integer> datos = new ArrayList<Integer>();
-    private static String data = "";
-    private Datos dat = new Datos();
-    public static String degrees,dioxide,light,person;
+    private Datos data = new Datos();
     private BluetoothDevice bluetoothDevice;
     private BluetoothGatt bluetoothGatt;
     boolean enabled = true;
@@ -92,8 +88,8 @@ public class DataActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
-        if (getIntent().getParcelableExtra("Objeto") != null) {
-            bluetoothDevice = getIntent().getParcelableExtra("Objeto");
+        if (getIntent().getParcelableExtra("object") != null) {
+            bluetoothDevice = getIntent().getParcelableExtra("object");
 
             choose.setVisibility(View.INVISIBLE);
             dataCard.setVisibility(View.VISIBLE);
@@ -108,22 +104,20 @@ public class DataActivity extends AppCompatActivity {
 
         }
 
-        connectButton.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                if (connected) {
-                    bluetoothGatt.disconnect();
-                    connected = false;
-                    status.setText("Desconectado");
-                    status.setTextColor(Color.RED);
-                    connectButton.setText("Conectar de nuevo");
+        connectButton.setOnClickListener(v -> {
+            if (connected) {
+                bluetoothGatt.disconnect();
+                connected = false;
+                status.setText("Desconectado");
+                status.setTextColor(Color.RED);
+                connectButton.setText("Conectar de nuevo");
 
 
-                } else {
-                    connect();
-                    connectButton.setText("Desconectar");
-                    status.setText("Conectado");
-                    status.setTextColor(Color.GREEN);
-                }
+            } else {
+                connect();
+                connectButton.setText("Desconectar");
+                status.setText("Conectado");
+                status.setTextColor(Color.GREEN);
             }
         });
 
@@ -141,8 +135,7 @@ public class DataActivity extends AppCompatActivity {
 
     public void showData() {
 
-        if (!datos.isEmpty() || !connected) {
-            datos.clear();
+        if (!connected) {
             temperature.setText(R.string.empty_text);
             iLum.setText(R.string.empty_text);
             co2.setText(R.string.empty_text);
@@ -151,66 +144,45 @@ public class DataActivity extends AppCompatActivity {
             co2Alert.setVisibility(View.INVISIBLE);
             tempAlert.setVisibility(View.INVISIBLE);
 
+        } else {
+            lumAlert.setVisibility(View.VISIBLE);
+            co2Alert.setVisibility(View.VISIBLE);
+            tempAlert.setVisibility(View.VISIBLE);
+
+            temperature.setText(data.getStringTemperature());
+            iLum.setText(data.getStringLux());
+            co2.setText(data.getStringCo2());
+            people.setText(data.getStringPeople());
+
+            checkData();
         }
-        try {
-            if (data.equals("")) {
-                throw new ArrayIndexOutOfBoundsException();
-            } else if (connected) {
-                String[] valores = data.split("/");
-                for (int i = 0; i < valores.length; i++) {
-                    if (valores[i].startsWith("T")) {
-                        valores[i] = valores[i].replace("T", "");
-                        dat.setTemperature(valores[i]);
-                        temperature.setText(dat.getStringTemperature());
-                        tempAlert.setVisibility(View.VISIBLE);
-                        if (dat.getTemperature() >= 37) {
-                            tempAlert.setImageResource(R.drawable.ic_brightness_high_black_24dp);
-                        } else if (dat.getTemperature() >= 30 && dat.getTemperature() < 37) {
-                            tempAlert.setImageResource(R.drawable.ic_brightness_warning);
-                        } else if (dat.getTemperature() >= 20 && dat.getTemperature() < 30) {
-                            tempAlert.setImageResource(R.drawable.ic_done_black_24dp);
-                        } else if (dat.getTemperature() < 20) {
-                            tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
-                        }
-                    } else if (valores[i].startsWith("L")) {
-                        valores[i] = valores[i].replace("L", "");
-                        dat.setLux(valores[i]);
-                        iLum.setText(dat.getStringLux());
-                        lumAlert.setVisibility(View.VISIBLE);
-                        if (dat.getLux() >= 1100) {
-                            lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
-                        } else if (dat.getLux() >= 950 && dat.getLux() < 1100) {
-                            lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
-                        } else if (dat.getLux() < 950) {
-                            lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
-                        }
-                    } else if (valores[i].startsWith("C")) {
-                        valores[i] = valores[i].replace("C", "");
-                        dat.setCo2(valores[i]);
-                        co2.setText(dat.getStringCo2());
-                        co2Alert.setVisibility(View.VISIBLE);
-                        if (dat.getCo2() >= 1000) {
-                            co2Alert.setImageResource(R.drawable.ic_wb_cloudy_black_24dp);
-                        } else if (dat.getCo2() >= 900 && dat.getCo2() < 1000) {
-                            co2Alert.setImageResource(R.drawable.ic_warning_black_24dp);
-                        } else if (dat.getCo2() < 900) {
-                            co2Alert.setImageResource(R.drawable.ic_done_black_24dp);
-                        }
-                    } else if (valores[i].startsWith("P")) {
-                        valores[i] = valores[i].replace("P", "");
-                        dat.setPeople(valores[i]);
-                        people.setText(dat.getStringPeople());
-                    }
-                }
-            }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            Utils.toast(getApplicationContext(),
-                    "El dispositivo " + bluetoothDevice.getName() + " no está enviando datos.");
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException ex) {
-                ex.printStackTrace();
-            }
+    }
+
+    private void checkData() {
+        if (data.getTemperature() >= 37) {
+            tempAlert.setImageResource(R.drawable.ic_brightness_high_black_24dp);
+        } else if (data.getTemperature() >= 30 && data.getTemperature() < 37) {
+            tempAlert.setImageResource(R.drawable.ic_brightness_warning);
+        } else if (data.getTemperature() >= 20 && data.getTemperature() < 30) {
+            tempAlert.setImageResource(R.drawable.ic_done_black_24dp);
+        } else if (data.getTemperature() < 20) {
+            tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
+        }
+
+        if (data.getLux() >= 1100) {
+            lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
+        } else if (data.getLux() >= 950 && data.getLux() < 1100) {
+            lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
+        } else if (data.getLux() < 950) {
+            lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
+        }
+
+        if (data.getCo2() >= 1000) {
+            co2Alert.setImageResource(R.drawable.ic_wb_cloudy_black_24dp);
+        } else if (data.getCo2() >= 900 && data.getCo2() < 1000) {
+            co2Alert.setImageResource(R.drawable.ic_warning_black_24dp);
+        } else if (data.getCo2() < 900) {
+            co2Alert.setImageResource(R.drawable.ic_done_black_24dp);
         }
     }
 
@@ -252,17 +224,13 @@ public class DataActivity extends AppCompatActivity {
         public void onCharacteristicRead(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic, int status) {
             if (status == BluetoothGatt.GATT_SUCCESS) {
                 byte[] data = characteristic.getValue();
-                DataActivity.data = new String(data);
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        showData();
-                    }
-                });
+                String[] valores = new String(data).split("/");
+                createDataObject(valores);
+//                showData();
+                runOnUiThread(() -> showData());
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
-                return;
             }
         }
 
@@ -271,6 +239,24 @@ public class DataActivity extends AppCompatActivity {
             bluetoothGatt.readCharacteristic(characteristic);
         }
     };
+
+    private void createDataObject(String[] valores) {
+        for (int i = 0; i < valores.length; i++) {
+            if (valores[i].startsWith("T")) {
+                valores[i] = valores[i].replace("T", "");
+                data.setTemperature(valores[i]);
+            } else if (valores[i].startsWith("L")) {
+                valores[i] = valores[i].replace("L", "");
+                data.setLux(valores[i]);
+            } else if (valores[i].startsWith("C")) {
+                valores[i] = valores[i].replace("C", "");
+                data.setCo2(valores[i]);
+            } else if (valores[i].startsWith("P")) {
+                valores[i] = valores[i].replace("P", "");
+                data.setPeople(valores[i]);
+            }
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -283,7 +269,8 @@ public class DataActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.devices:
-                Intent dev = new Intent(this, MainActivity.class);
+//                Intent dev = new Intent(this, MainActivity.class);
+                Intent dev = new Intent(this, ScanActivity.class);
                 startActivity(dev);
                 return true;
             case R.id.graphics:
