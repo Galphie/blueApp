@@ -226,11 +226,11 @@ public class DataActivity extends AppCompatActivity {
                 byte[] data = characteristic.getValue();
                 String[] valores = new String(data).split("/");
                 createDataObject(valores);
+//                showData();
                 runOnUiThread(() -> showData());
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
-                return;
             }
         }
 
