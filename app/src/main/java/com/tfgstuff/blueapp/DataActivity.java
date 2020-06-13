@@ -26,6 +26,8 @@ import androidx.cardview.widget.CardView;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -36,20 +38,21 @@ import static com.tfgstuff.blueapp.R.layout.activity_data;
 public class DataActivity extends AppCompatActivity {
 
     private static final int GATT_INTERNAL_ERROR = 129;
-    FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference dataRef = database.getReference("Datos");
     private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
-    private TextView name, address, choose, status, temperature, co2, iLum, people;
-    private ImageView tempAlert, lumAlert, co2Alert;
-    private CardView dataCard;
-    private Button connectButton;
+
     private static boolean connected;
+
+    private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Datos data = new Datos();
     private BluetoothDevice bluetoothDevice;
     private BluetoothGatt bluetoothGatt;
-    boolean enabled = true;
+
+    private TextView name, address, choose, status, temperature, co2, iLum, people;
+    private ImageView tempAlert, lumAlert, co2Alert;
+    private CardView dataCard;
+    private Button connectButton, registerButton;
 
 
     @Override
@@ -57,52 +60,29 @@ public class DataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(activity_data);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        choose = (TextView) findViewById(R.id.choose);
+        choose = findViewById(R.id.choose);
 
-        temperature = (TextView) findViewById(R.id.temperature);
-        co2 = (TextView) findViewById(R.id.co2);
-        iLum = (TextView) findViewById(R.id.iLum);
-        people = (TextView) findViewById(R.id.people);
-        status = (TextView) findViewById(R.id.status);
-        tempAlert = (ImageView) findViewById(R.id.tempAlert);
-        lumAlert = (ImageView) findViewById(R.id.lumAlert);
-        co2Alert = (ImageView) findViewById(R.id.co2Alert);
+        temperature = findViewById(R.id.temperature);
+        co2 = findViewById(R.id.co2);
+        iLum = findViewById(R.id.iLum);
+        people = findViewById(R.id.people);
+        status = findViewById(R.id.status);
+        tempAlert = findViewById(R.id.tempAlert);
+        lumAlert = findViewById(R.id.lumAlert);
+        co2Alert = findViewById(R.id.co2Alert);
         tempAlert.setVisibility(View.INVISIBLE);
         lumAlert.setVisibility(View.INVISIBLE);
         co2Alert.setVisibility(View.INVISIBLE);
-        dataCard = (CardView) findViewById(R.id.data_card);
+        dataCard = findViewById(R.id.data_card);
         dataCard.setVisibility(View.INVISIBLE);
-        connectButton = (Button) findViewById(R.id.button);
-        connectButton.setVisibility(View.INVISIBLE);
-        name = (TextView) findViewById(R.id.nombre);
-        address = (TextView) findViewById(R.id.direccion);
-
-        Date currentTime = Calendar.getInstance().getTime();
-
-
-    }
-
-    protected void onResume() {
-        super.onResume();
-        if (getIntent().getParcelableExtra("object") != null) {
-            bluetoothDevice = getIntent().getParcelableExtra("object");
-
-            choose.setVisibility(View.INVISIBLE);
-            dataCard.setVisibility(View.VISIBLE);
-            connectButton.setVisibility(View.VISIBLE);
-            name.setText(bluetoothDevice.getName());
-            address.setText(bluetoothDevice.getAddress());
-
-            connect();
-
-            status.setText("Conectado");
-            status.setTextColor(Color.GREEN);
-
-        }
+        connectButton = findViewById(R.id.button);
+        registerButton = findViewById(R.id.activity_data_register_button);
+        name = findViewById(R.id.nombre);
+        address = findViewById(R.id.direccion);
 
         connectButton.setOnClickListener(v -> {
             if (connected) {
@@ -120,6 +100,29 @@ public class DataActivity extends AppCompatActivity {
                 status.setTextColor(Color.GREEN);
             }
         });
+        registerButton.setOnClickListener(v -> register());
+
+
+    }
+
+    protected void onResume() {
+        super.onResume();
+        if (getIntent().getParcelableExtra("object") != null) {
+            bluetoothDevice = getIntent().getParcelableExtra("object");
+
+            choose.setVisibility(View.INVISIBLE);
+            dataCard.setVisibility(View.VISIBLE);
+            connectButton.setVisibility(View.VISIBLE);
+            registerButton.setVisibility(View.VISIBLE);
+            name.setText(bluetoothDevice.getName());
+            address.setText(bluetoothDevice.getAddress());
+
+            connect();
+
+            status.setText("Conectado");
+            status.setTextColor(Color.GREEN);
+
+        }
 
     }
 
@@ -149,10 +152,10 @@ public class DataActivity extends AppCompatActivity {
             co2Alert.setVisibility(View.VISIBLE);
             tempAlert.setVisibility(View.VISIBLE);
 
-            temperature.setText(data.getStringTemperature());
-            iLum.setText(data.getStringLux());
-            co2.setText(data.getStringCo2());
-            people.setText(data.getStringPeople());
+            temperature.setText(String.valueOf(data.getTemperature()));
+            iLum.setText(String.valueOf(data.getLux()));
+            co2.setText(String.valueOf(data.getCo2()));
+            people.setText(String.valueOf(data.getPeople())) ;
 
             checkData();
         }
@@ -169,11 +172,11 @@ public class DataActivity extends AppCompatActivity {
             tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
         }
 
-        if (data.getLux() >= 1100) {
+        if (data.getLux() >= 1000) {
             lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
-        } else if (data.getLux() >= 950 && data.getLux() < 1100) {
+        } else if (data.getLux() >= 650 && data.getLux() < 1000) {
             lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
-        } else if (data.getLux() < 950) {
+        } else if (data.getLux() < 650) {
             lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
         }
 
@@ -210,7 +213,7 @@ public class DataActivity extends AppCompatActivity {
                     BluetoothGattService service = bluetoothGatt.getService(UUID.fromString(SERVICE_UUID));
                     BluetoothGattCharacteristic characteristic = service
                             .getCharacteristic(UUID.fromString(CHARACTERISTIC_UUID));
-                    bluetoothGatt.setCharacteristicNotification(characteristic, enabled);
+                    bluetoothGatt.setCharacteristicNotification(characteristic, true);
                     BluetoothGattDescriptor descriptor = characteristic.getDescriptor(
                             UUID.fromString(DESCRIPTOR_UUID));
                     descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
@@ -226,8 +229,8 @@ public class DataActivity extends AppCompatActivity {
                 byte[] data = characteristic.getValue();
                 String[] valores = new String(data).split("/");
                 createDataObject(valores);
-//                showData();
                 runOnUiThread(() -> showData());
+                register();
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
@@ -269,15 +272,11 @@ public class DataActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.devices:
-//                Intent dev = new Intent(this, MainActivity.class);
                 Intent dev = new Intent(this, ScanActivity.class);
                 startActivity(dev);
                 return true;
             case R.id.graphics:
                 Utils.toast(this, "Esto abrirá la actividad Gráficos.");
-                return true;
-            case R.id.logout:
-                Utils.toast(this, "Esto cerrará sesión.");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -285,7 +284,11 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
-    public void register(View view) {
-
+    public void register() {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm:ss");
+        String now = LocalDateTime.now().format(formatter);
+        DatabaseReference dataRef = database.getReference().child(now);
+        dataRef.setValue(data);
     }
 }
+
