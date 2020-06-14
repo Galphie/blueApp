@@ -6,8 +6,8 @@
     <color name="colorAccentDark">#0366c2</color>
     <color name="colorAccentMonochromatic">#2d8be3</color>
     <color name="colorAccentGolden">#fc5c00</color>
-    <color name="red">#F44336</color>
+    <color name="colorTemperature">#e69017</color>
+    <color name="colorLux">#4CAF50</color>
+    <color name="colorCo2">#673AB7</color>
     <color name="blue">#2196F3</color>
-    <color name="green">#4CAF50</color>
-    <color name="purple">#673AB7</color>
 </resources>

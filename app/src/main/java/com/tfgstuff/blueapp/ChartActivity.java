@@ -142,13 +142,13 @@ public class ChartActivity extends AppCompatActivity {
         ArrayList<ILineDataSet> iLineDataSets = new ArrayList<>();
 
         LineDataSet temperatureData = new LineDataSet(lineChartDataSet(TEMPERATURE_TYPE), "Temperatura");
-        temperatureData.setColor(ResourcesCompat.getColor(getResources(), R.color.red, null));
+        temperatureData.setColor(ResourcesCompat.getColor(getResources(), R.color.colorTemperature, null));
         LineDataSet co2Data = new LineDataSet(lineChartDataSet(CO2_TYPE), "CO2");
-        co2Data.setColor(ResourcesCompat.getColor(getResources(), R.color.green, null));
+        co2Data.setColor(ResourcesCompat.getColor(getResources(), R.color.colorCo2, null));
         LineDataSet luxData = new LineDataSet(lineChartDataSet(LUX_TYPE), "Intensidad lumínica");
-        luxData.setColor(ResourcesCompat.getColor(getResources(), R.color.blue, null));
+        luxData.setColor(ResourcesCompat.getColor(getResources(), R.color.colorLux, null));
         LineDataSet peopleData = new LineDataSet(lineChartDataSet(PEOPLE_TYPE), "Personas");
-        peopleData.setColor(ResourcesCompat.getColor(getResources(), R.color.purple, null));
+        peopleData.setColor(ResourcesCompat.getColor(getResources(), R.color.colorAccent, null));
 
         switch (type) {
             case ALL_TYPE:

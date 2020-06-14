@@ -54,7 +54,7 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
-        getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(),R.color.colorAccentDark,null));
+        getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccentDark, null));
         parent = findViewById(R.id.parent_activity_scan);
         recyclerView = findViewById(R.id.scanner_recycler_view);
         startScanButton = findViewById(R.id.start_scan_button);
@@ -167,6 +167,10 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
 
     @Override
     public void onResultInfoClick(int position) {
-        Utils.toast(getApplicationContext(), "Información detallada del dispositivo");
+        DialogFragment dialogFragment = new InfoDialog();
+        Bundle args = new Bundle();
+        args.putParcelable("object", results.get(position).getDevice());
+        dialogFragment.setArguments(args);
+        dialogFragment.show(getSupportFragmentManager(),"InfoDialog");
     }
 }

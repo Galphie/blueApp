@@ -29,4 +29,6 @@
     <string name="device_rssi">Rssi:</string>
     <string name="cancel">Cancelar</string>
     <string name="unknown_device">Desconocido</string>
+    <string name="connect">Conectar</string>
+    <string name="device_uuids">UUIDs:</string>
 </resources>
