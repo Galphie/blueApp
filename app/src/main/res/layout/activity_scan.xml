@@ -5,7 +5,7 @@
     android:id="@+id/parent_activity_scan"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DFDFDF"
+    android:background="@color/colorPrimaryDark"
     tools:context=".ScanActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -37,6 +37,7 @@
         android:layout_marginBottom="32dp"
         android:clickable="true"
         android:visibility="invisible"
+        app:backgroundTint="@color/colorAccentDark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_bluetooth_connected_24" />

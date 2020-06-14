@@ -15,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -22,7 +23,11 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -37,6 +42,7 @@ import static com.tfgstuff.blueapp.R.layout.activity_data;
 
 public class DataActivity extends AppCompatActivity {
 
+    private static int COUNTER = 0;
     private static final int GATT_INTERNAL_ERROR = 129;
     private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
@@ -49,10 +55,11 @@ public class DataActivity extends AppCompatActivity {
     private BluetoothDevice bluetoothDevice;
     private BluetoothGatt bluetoothGatt;
 
+    private ConstraintLayout parent;
     private TextView name, address, choose, status, temperature, co2, iLum, people;
     private ImageView tempAlert, lumAlert, co2Alert;
     private CardView dataCard;
-    private Button connectButton, registerButton;
+    private Button connectButton;
 
 
     @Override
@@ -60,12 +67,15 @@ public class DataActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(activity_data);
 
+        getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(), R.color.colorAccentDark, null));
+
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        choose = findViewById(R.id.choose);
+        parent = findViewById(R.id.parent_activity_data);
 
+        choose = findViewById(R.id.choose);
         temperature = findViewById(R.id.temperature);
         co2 = findViewById(R.id.co2);
         iLum = findViewById(R.id.iLum);
@@ -80,7 +90,6 @@ public class DataActivity extends AppCompatActivity {
         dataCard = findViewById(R.id.data_card);
         dataCard.setVisibility(View.INVISIBLE);
         connectButton = findViewById(R.id.button);
-        registerButton = findViewById(R.id.activity_data_register_button);
         name = findViewById(R.id.nombre);
         address = findViewById(R.id.direccion);
 
@@ -100,8 +109,6 @@ public class DataActivity extends AppCompatActivity {
                 status.setTextColor(Color.GREEN);
             }
         });
-        registerButton.setOnClickListener(v -> register());
-
 
     }
 
@@ -113,7 +120,6 @@ public class DataActivity extends AppCompatActivity {
             choose.setVisibility(View.INVISIBLE);
             dataCard.setVisibility(View.VISIBLE);
             connectButton.setVisibility(View.VISIBLE);
-            registerButton.setVisibility(View.VISIBLE);
             name.setText(bluetoothDevice.getName());
             address.setText(bluetoothDevice.getAddress());
 
@@ -155,36 +161,36 @@ public class DataActivity extends AppCompatActivity {
             temperature.setText(String.valueOf(data.getTemperature()));
             iLum.setText(String.valueOf(data.getLux()));
             co2.setText(String.valueOf(data.getCo2()));
-            people.setText(String.valueOf(data.getPeople())) ;
+            people.setText(String.valueOf(data.getPeople()));
 
             checkData();
         }
     }
 
     private void checkData() {
-        if (data.getTemperature() >= 37) {
+        if (Integer.parseInt(data.getTemperature()) >= 37) {
             tempAlert.setImageResource(R.drawable.ic_brightness_high_black_24dp);
-        } else if (data.getTemperature() >= 30 && data.getTemperature() < 37) {
+        } else if (Integer.parseInt(data.getTemperature()) >= 30 && Integer.parseInt(data.getTemperature()) < 37) {
             tempAlert.setImageResource(R.drawable.ic_brightness_warning);
-        } else if (data.getTemperature() >= 20 && data.getTemperature() < 30) {
+        } else if (Integer.parseInt(data.getTemperature()) >= 20 && Integer.parseInt(data.getTemperature()) < 30) {
             tempAlert.setImageResource(R.drawable.ic_done_black_24dp);
-        } else if (data.getTemperature() < 20) {
+        } else if (Integer.parseInt(data.getTemperature()) < 20) {
             tempAlert.setImageResource(R.drawable.ic_ac_unit_black_24dp);
         }
 
-        if (data.getLux() >= 1000) {
+        if (Integer.parseInt(data.getLux()) >= 1000) {
             lumAlert.setImageResource(R.drawable.ic_brightness_1_black_24dp);
-        } else if (data.getLux() >= 650 && data.getLux() < 1000) {
+        } else if (Integer.parseInt(data.getLux()) >= 650 && Integer.parseInt(data.getLux()) < 1000) {
             lumAlert.setImageResource(R.drawable.ic_brightness_2_black_24dp);
-        } else if (data.getLux() < 650) {
+        } else if (Integer.parseInt(data.getLux()) < 650) {
             lumAlert.setImageResource(R.drawable.ic_brightness_3_black_24dp);
         }
 
-        if (data.getCo2() >= 1000) {
+        if (Integer.parseInt(data.getCo2()) >= 1000) {
             co2Alert.setImageResource(R.drawable.ic_wb_cloudy_black_24dp);
-        } else if (data.getCo2() >= 900 && data.getCo2() < 1000) {
+        } else if (Integer.parseInt(data.getCo2()) >= 900 && Integer.parseInt(data.getCo2()) < 1000) {
             co2Alert.setImageResource(R.drawable.ic_warning_black_24dp);
-        } else if (data.getCo2() < 900) {
+        } else if (Integer.parseInt(data.getCo2()) < 900) {
             co2Alert.setImageResource(R.drawable.ic_done_black_24dp);
         }
     }
@@ -230,7 +236,11 @@ public class DataActivity extends AppCompatActivity {
                 String[] valores = new String(data).split("/");
                 createDataObject(valores);
                 runOnUiThread(() -> showData());
-                register();
+                if (COUNTER >= 10) {
+                    register();
+                    COUNTER = 0;
+                }
+                COUNTER++;
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
@@ -276,7 +286,20 @@ public class DataActivity extends AppCompatActivity {
                 startActivity(dev);
                 return true;
             case R.id.graphics:
-                Utils.toast(this, "Esto abrirá la actividad Gráficos.");
+                if (bluetoothDevice != null) {
+                    Intent intent = new Intent(this, ChartActivity.class);
+                    intent.putExtra("mac_address", bluetoothDevice.getAddress().substring(9));
+                    startActivity(intent);
+                } else {
+                    Snackbar.make(parent, "No hay ningún dispositivo.", BaseTransientBottomBar.LENGTH_LONG)
+                            .setAction("Buscar dispositivos", v -> {
+                                Intent dev1 = new Intent(getApplicationContext(), ScanActivity.class);
+                                startActivity(dev1);
+                            })
+                            .setActionTextColor(ResourcesCompat.getColor(DataActivity.this.getResources(), R.color.colorAccentGolden, null))
+                            .setBackgroundTint(ResourcesCompat.getColor(DataActivity.this.getResources(), R.color.colorAccentDark, null))
+                            .show();
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -287,7 +310,7 @@ public class DataActivity extends AppCompatActivity {
     public void register() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm:ss");
         String now = LocalDateTime.now().format(formatter);
-        DatabaseReference dataRef = database.getReference().child(now);
+        DatabaseReference dataRef = database.getReference().child(bluetoothDevice.getAddress().substring(9)).child(now);
         dataRef.setValue(data);
     }
 }

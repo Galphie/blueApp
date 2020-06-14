@@ -33,7 +33,7 @@ import java.util.Objects;
 
 public class ScanActivity extends AppCompatActivity implements ResultsListAdapter.OnResultClickListener {
 
-    private final static int REQUEST_ENABLE_BT = 1;
+    private final static int REQUEST_ENABLE_BT = 69;
     private static final int PERMISSION_REQUEST_COARSE_LOCATION = 1;
     private static final int SIGNAL_STRENGTH = -75;
 
@@ -54,6 +54,7 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scan);
 
+        getWindow().setStatusBarColor(ResourcesCompat.getColor(getResources(),R.color.colorAccentDark,null));
         parent = findViewById(R.id.parent_activity_scan);
         recyclerView = findViewById(R.id.scanner_recycler_view);
         startScanButton = findViewById(R.id.start_scan_button);
@@ -115,7 +116,7 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
                 scanning = false;
                 Snackbar.make(parent, "Encontrados " + results.size() + " dispotivos.", BaseTransientBottomBar.LENGTH_LONG)
                         .setAction("", null)
-                        .setBackgroundTint(ResourcesCompat.getColor(ScanActivity.this.getResources(), R.color.colorPrimary, null))
+                        .setBackgroundTint(ResourcesCompat.getColor(ScanActivity.this.getResources(), R.color.colorAccentDark, null))
                         .show();
                 startScanButton.setVisibility(View.VISIBLE);
                 stopScanButton.setVisibility(View.INVISIBLE);
