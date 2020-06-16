@@ -15,7 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,21 +32,20 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 import static com.tfgstuff.blueapp.R.layout.activity_data;
 
 public class DataActivity extends AppCompatActivity {
 
-    private static int COUNTER = 0;
     private static final int GATT_INTERNAL_ERROR = 129;
     private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
     private static final String CHARACTERISTIC_UUID = "beb5483e-36e1-4688-b7f5-ea07361b26a8";
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
 
+    private static int counter = 0;
     private static boolean connected;
 
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -71,7 +69,7 @@ public class DataActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         parent = findViewById(R.id.parent_activity_data);
 
@@ -97,15 +95,15 @@ public class DataActivity extends AppCompatActivity {
             if (connected) {
                 bluetoothGatt.disconnect();
                 connected = false;
-                status.setText("Desconectado");
+                status.setText(getString(R.string.disconnected));
                 status.setTextColor(Color.RED);
-                connectButton.setText("Conectar de nuevo");
+                connectButton.setText(getString(R.string.reconnect));
 
 
             } else {
                 connect();
-                connectButton.setText("Desconectar");
-                status.setText("Conectado");
+                connectButton.setText(getString(R.string.disconnect));
+                status.setText(getString(R.string.connect));
                 status.setTextColor(Color.GREEN);
             }
         });
@@ -125,7 +123,7 @@ public class DataActivity extends AppCompatActivity {
 
             connect();
 
-            status.setText("Conectado");
+            status.setText(getString(R.string.connected));
             status.setTextColor(Color.GREEN);
 
         }
@@ -142,7 +140,7 @@ public class DataActivity extends AppCompatActivity {
         bluetoothGatt.disconnect();
     }
 
-    public void showData() {
+    private void showData() {
 
         if (!connected) {
             temperature.setText(R.string.empty_text);
@@ -195,7 +193,7 @@ public class DataActivity extends AppCompatActivity {
         }
     }
 
-    public void connect() {
+    private void connect() {
         bluetoothGatt = bluetoothDevice.connectGatt(this, false, mGattCallback);
     }
 
@@ -236,11 +234,11 @@ public class DataActivity extends AppCompatActivity {
                 String[] valores = new String(data).split("/");
                 createDataObject(valores);
                 runOnUiThread(() -> showData());
-                if (COUNTER >= 10) {
+                if (counter >= 10) {
                     register();
-                    COUNTER = 0;
+                    counter = 0;
                 }
-                COUNTER++;
+                counter++;
             } else if (status == GATT_INTERNAL_ERROR) {
                 Log.e("Error de conexión", "Error en el proceso de descubrimiento de servicios.");
                 gatt.disconnect();
@@ -307,7 +305,7 @@ public class DataActivity extends AppCompatActivity {
 
     }
 
-    public void register() {
+    private void register() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm:ss");
         String now = LocalDateTime.now().format(formatter);
         DatabaseReference dataRef = database.getReference().child(bluetoothDevice.getAddress().substring(9)).child(now);

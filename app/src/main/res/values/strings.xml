@@ -31,4 +31,7 @@
     <string name="unknown_device">Desconocido</string>
     <string name="connect">Conectar</string>
     <string name="device_uuids">UUIDs:</string>
+    <string name="disconnected">Desconectado</string>
+    <string name="reconnect">Conectar de nuevo</string>
+    <string name="connected">Conectado</string>
 </resources>

@@ -38,16 +38,16 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
     private static final int SIGNAL_STRENGTH = -75;
 
     private static boolean scanning = false;
-    ConstraintLayout parent;
-    RecyclerView recyclerView;
-    FloatingActionButton startScanButton, stopScanButton;
+    private ConstraintLayout parent;
+    private RecyclerView recyclerView;
+    private FloatingActionButton startScanButton, stopScanButton;
 
-    ArrayList<ScanResult> results = new ArrayList<>();
-    ArrayList<BluetoothDevice> devices = new ArrayList<>();
+    private ArrayList<ScanResult> results = new ArrayList<>();
+    private ArrayList<BluetoothDevice> devices = new ArrayList<>();
 
-    BluetoothManager btManager;
-    BluetoothAdapter btAdapter;
-    BluetoothLeScanner btScanner;
+    private BluetoothManager btManager;
+    private BluetoothAdapter btAdapter;
+    private BluetoothLeScanner btScanner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

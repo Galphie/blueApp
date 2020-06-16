@@ -13,6 +13,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class ConfirmActionDialog extends DialogFragment {
     public static final int CONNECTION_CODE = 112;
+    public static final int DISCONNECTION_CODE = 8;
 
     @NonNull
     @Override
@@ -28,6 +29,9 @@ public class ConfirmActionDialog extends DialogFragment {
                                 BluetoothDevice device = mArgs.getParcelable("object");
                                 connection.putExtra("object", device);
                                 startActivity(connection);
+                                break;
+                            case DISCONNECTION_CODE:
+
                                 break;
                         }
                         dialog.dismiss();

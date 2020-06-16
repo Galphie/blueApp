@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.ParcelUuid;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
@@ -37,6 +38,12 @@ public class InfoDialog extends DialogFragment {
             name.setText(device.getName());
         }
         mac.setText(device.getAddress());
+        ParcelUuid[] parcelUuids = device.getUuids();
+        if (parcelUuids != null) {
+            for (ParcelUuid uuid : parcelUuids) {
+                Utils.toast(getContext(),uuid.toString());
+            }
+        }
 
         builder.setView(view)
                 .setPositiveButton(getString(R.string.connect), (dialog, which) -> {

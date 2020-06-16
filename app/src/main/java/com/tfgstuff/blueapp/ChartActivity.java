@@ -1,20 +1,16 @@
 package com.tfgstuff.blueapp;
 
+import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
-
-import android.os.Bundle;
-import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.database.DataSnapshot;
@@ -23,9 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Map;
 
 public class ChartActivity extends AppCompatActivity {
 
@@ -37,6 +31,7 @@ public class ChartActivity extends AppCompatActivity {
 
     private ArrayList<Registro> registros = new ArrayList<>();
 
+    private ConstraintLayout parent;
     private TabLayout tabLayout;
     private LineChart lineChart;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
@@ -100,6 +95,7 @@ public class ChartActivity extends AppCompatActivity {
             public void onCancelled(@NonNull DatabaseError databaseError) {
             }
         });
+        parent =  findViewById(R.id.parent_activity_chart);
         lineChart = findViewById(R.id.chart_activity_line_chart);
         tabLayout = findViewById(R.id.chart_tab_layout);
         lineChart.setScaleYEnabled(false);
@@ -181,22 +177,22 @@ public class ChartActivity extends AppCompatActivity {
         switch (type) {
             case TEMPERATURE_TYPE:
                 for (int i = 0; i < registros.size(); i++) {
-                    dataSet.add(new Entry(i, Integer.parseInt(registros.get(i).getDatos().getTemperature())));
+                    dataSet.add(new Entry(i, registros.get(i).getDatos().temperatureToInt()));
                 }
                 break;
             case CO2_TYPE:
                 for (int i = 0; i < registros.size(); i++) {
-                    dataSet.add(new Entry(i, Integer.parseInt(registros.get(i).getDatos().getCo2())));
+                    dataSet.add(new Entry(i, registros.get(i).getDatos().co2ToInt()));
                 }
                 break;
             case LUX_TYPE:
                 for (int i = 0; i < registros.size(); i++) {
-                    dataSet.add(new Entry(i, Integer.parseInt(registros.get(i).getDatos().getLux())));
+                    dataSet.add(new Entry(i, registros.get(i).getDatos().luxToInt()));
                 }
                 break;
             case PEOPLE_TYPE:
                 for (int i = 0; i < registros.size(); i++) {
-                    dataSet.add(new Entry(i, Integer.parseInt(registros.get(i).getDatos().getPeople())));
+                    dataSet.add(new Entry(i, registros.get(i).getDatos().peopleToInt()));
                 }
                 break;
         }

@@ -47,4 +47,21 @@ public class Datos {
     public void setLux(String lux) {
         this.lux = lux;
     }
+
+    public int temperatureToInt() {
+        return Integer.parseInt(this.temperature);
+    }
+
+    public int co2ToInt() {
+        return Integer.parseInt(this.co2);
+    }
+
+    public int peopleToInt() {
+        return Integer.parseInt(this.people);
+    }
+
+    public int luxToInt() {
+        return Integer.parseInt(this.lux);
+    }
+
 }
