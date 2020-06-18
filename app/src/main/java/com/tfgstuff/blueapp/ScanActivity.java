@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AlertDialog;
@@ -142,11 +141,11 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
         public void onScanResult(int callbackType, ScanResult result) {
             if (!devices.contains(result.getDevice()) && result.getRssi() > SIGNAL_STRENGTH) {
                 new Handler().post(() -> {
-                    Log.d("ScanActivity", "onScanResult: "
-                            + result.getDevice().getAddress() + "\nNombre: " + result.getDevice().getName());
-                    results.add(result);
-                    devices.add(result.getDevice());
-                    recyclerView.getAdapter().notifyDataSetChanged();
+                    if (result.getDevice().getAddress().startsWith("A4:CF:12")) {
+                        results.add(result);
+                        devices.add(result.getDevice());
+                        recyclerView.getAdapter().notifyDataSetChanged();
+                    }
                 });
             }
         }
@@ -171,6 +170,6 @@ public class ScanActivity extends AppCompatActivity implements ResultsListAdapte
         Bundle args = new Bundle();
         args.putParcelable("object", results.get(position).getDevice());
         dialogFragment.setArguments(args);
-        dialogFragment.show(getSupportFragmentManager(),"InfoDialog");
+        dialogFragment.show(getSupportFragmentManager(), "InfoDialog");
     }
 }

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -25,13 +24,14 @@ public class ConfirmActionDialog extends DialogFragment {
                     .setPositiveButton(getString(R.string.accept), (dialog, id) -> {
                         switch (mArgs.getInt("type")) {
                             case CONNECTION_CODE:
-                                Intent connection = new Intent(getContext(),DataActivity.class);
+                                Intent connection = new Intent(getContext(), DataActivity.class);
                                 BluetoothDevice device = mArgs.getParcelable("object");
                                 connection.putExtra("object", device);
                                 startActivity(connection);
                                 break;
                             case DISCONNECTION_CODE:
-
+                                DataActivity.bluetoothGatt.disconnect();
+                                DataActivity.connected = false;
                                 break;
                         }
                         dialog.dismiss();

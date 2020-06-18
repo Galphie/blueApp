@@ -44,7 +44,7 @@ public class ChartActivity extends AppCompatActivity {
         setContentView(R.layout.activity_chart);
 
         macAddress = getIntent().getExtras().getString("mac_address");
-        deviceRef = database.getReference().child(macAddress);
+        deviceRef = database.getReference().child("devices/" + macAddress);
         deviceRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {

@@ -24,6 +24,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -46,12 +47,12 @@ public class DataActivity extends AppCompatActivity {
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
 
     private static int counter = 0;
-    private static boolean connected;
+    public static boolean connected;
 
+    public static BluetoothGatt bluetoothGatt;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Datos data = new Datos();
     private BluetoothDevice bluetoothDevice;
-    private BluetoothGatt bluetoothGatt;
 
     private ConstraintLayout parent;
     private TextView name, address, choose, status, temperature, co2, iLum, people;
@@ -93,18 +94,19 @@ public class DataActivity extends AppCompatActivity {
 
         connectButton.setOnClickListener(v -> {
             if (connected) {
-                bluetoothGatt.disconnect();
-                connected = false;
-                status.setText(getString(R.string.disconnected));
-                status.setTextColor(Color.RED);
-                connectButton.setText(getString(R.string.reconnect));
-
-
+                DialogFragment dialogFragment = new ConfirmActionDialog();
+                Bundle args = new Bundle();
+                args.putString("confirm_action_dialog_message", "¿Deseas desconectarte?");
+                dialogFragment.setArguments(args);
+                dialogFragment.show(getSupportFragmentManager(), "confirm_disconnection");
+//                status.setText(getString(R.string.disconnected));
+//                status.setTextColor(Color.RED);
+//                connectButton.setText(getString(R.string.reconnect));
             } else {
                 connect();
-                connectButton.setText(getString(R.string.disconnect));
-                status.setText(getString(R.string.connect));
-                status.setTextColor(Color.GREEN);
+//                connectButton.setText(getString(R.string.disconnect));
+//                status.setText(getString(R.string.connect));
+//                status.setTextColor(Color.GREEN);
             }
         });
 
@@ -112,6 +114,15 @@ public class DataActivity extends AppCompatActivity {
 
     protected void onResume() {
         super.onResume();
+        if (!connected) {
+            status.setText(getString(R.string.disconnected));
+            status.setTextColor(Color.RED);
+            connectButton.setText(getString(R.string.reconnect));
+        } else {
+            connectButton.setText(getString(R.string.disconnect));
+            status.setText(getString(R.string.connect));
+            status.setTextColor(Color.GREEN);
+        }
         if (getIntent().getParcelableExtra("object") != null) {
             bluetoothDevice = getIntent().getParcelableExtra("object");
 
@@ -141,7 +152,6 @@ public class DataActivity extends AppCompatActivity {
     }
 
     private void showData() {
-
         if (!connected) {
             temperature.setText(R.string.empty_text);
             iLum.setText(R.string.empty_text);
@@ -150,7 +160,6 @@ public class DataActivity extends AppCompatActivity {
             lumAlert.setVisibility(View.INVISIBLE);
             co2Alert.setVisibility(View.INVISIBLE);
             tempAlert.setVisibility(View.INVISIBLE);
-
         } else {
             lumAlert.setVisibility(View.VISIBLE);
             co2Alert.setVisibility(View.VISIBLE);
@@ -308,7 +317,7 @@ public class DataActivity extends AppCompatActivity {
     private void register() {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd/HH/mm:ss");
         String now = LocalDateTime.now().format(formatter);
-        DatabaseReference dataRef = database.getReference().child(bluetoothDevice.getAddress().substring(9)).child(now);
+        DatabaseReference dataRef = database.getReference().child("devices").child(bluetoothDevice.getAddress().substring(9)).child(now);
         dataRef.setValue(data);
     }
 }
