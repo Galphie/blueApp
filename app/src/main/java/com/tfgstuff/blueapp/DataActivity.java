@@ -7,6 +7,7 @@ import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattDescriptor;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -94,7 +95,17 @@ public class DataActivity extends AppCompatActivity {
 
         connectButton.setOnClickListener(v -> {
             if (connected) {
-                DialogFragment dialogFragment = new ConfirmActionDialog();
+                DialogFragment dialogFragment = new ConfirmActionDialog(new ConfirmActionDialog.OnButtonClickListener() {
+                    @Override
+                    public void onPositiveButtonClick(DialogInterface dialogFragment) {
+                        Utils.toast(getApplicationContext(), "Pablo, puto");
+                    }
+
+                    @Override
+                    public void onNegativeButtonClick(DialogInterface dialogFragment) {
+
+                    }
+                });
                 Bundle args = new Bundle();
                 args.putString("confirm_action_dialog_message", "¿Deseas desconectarte?");
                 args.putInt("type", ConfirmActionDialog.DISCONNECTION_CODE);
@@ -105,9 +116,9 @@ public class DataActivity extends AppCompatActivity {
 //                connectButton.setText(getString(R.string.reconnect));
             } else {
                 connect();
-//                connectButton.setText(getString(R.string.disconnect));
-//                status.setText(getString(R.string.connect));
-//                status.setTextColor(Color.GREEN);
+                connectButton.setText(getString(R.string.disconnect));
+                status.setText(getString(R.string.connect));
+                status.setTextColor(Color.GREEN);
             }
         });
 
@@ -137,7 +148,6 @@ public class DataActivity extends AppCompatActivity {
 
             status.setText(getString(R.string.connected));
             status.setTextColor(Color.GREEN);
-
         }
 
     }
