@@ -322,9 +322,10 @@ public class DataActivity extends AppCompatActivity implements ConfirmActionDial
     }
 
     @Override
-    public void onPoisitiveButtonClick() {
-        bluetoothGatt.disconnect();
-        connected = false;
+    public void onPositiveButtonClick() {
+//        bluetoothGatt.disconnect();
+//        connected = false;
+        Utils.toast(getApplicationContext(), "Pablo, puto");
     }
 }
 

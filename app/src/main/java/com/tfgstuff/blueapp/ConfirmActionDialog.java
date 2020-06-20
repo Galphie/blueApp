@@ -31,7 +31,7 @@ public class ConfirmActionDialog extends DialogFragment {
                                 startActivity(connection);
                                 break;
                             case DISCONNECTION_CODE:
-                                mListener.onPoisitiveButtonClick();
+                                mListener.onPositiveButtonClick();
                                 break;
                         }
                         dialog.dismiss();
@@ -41,6 +41,6 @@ public class ConfirmActionDialog extends DialogFragment {
     }
 
     public interface OnPositiveButtonClickListener {
-        void onPoisitiveButtonClick();
+        void onPositiveButtonClick();
     }
 }
