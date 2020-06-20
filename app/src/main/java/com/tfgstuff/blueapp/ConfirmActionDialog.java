@@ -13,7 +13,6 @@ import androidx.fragment.app.DialogFragment;
 public class ConfirmActionDialog extends DialogFragment {
     public static final int CONNECTION_CODE = 112;
     public static final int DISCONNECTION_CODE = 8;
-    private OnPositiveButtonClickListener mListener;
 
     @NonNull
     @Override
@@ -31,16 +30,13 @@ public class ConfirmActionDialog extends DialogFragment {
                                 startActivity(connection);
                                 break;
                             case DISCONNECTION_CODE:
-                                mListener.onPositiveButtonClick();
+                                DataActivity.connected = false;
+                                DataActivity.bluetoothGatt.disconnect();
                                 break;
                         }
                         dialog.dismiss();
                     }).setNegativeButton(R.string.cancel, (dialog, id) -> dialog.dismiss());
         }
         return builder.create();
-    }
-
-    public interface OnPositiveButtonClickListener {
-        void onPositiveButtonClick();
     }
 }
