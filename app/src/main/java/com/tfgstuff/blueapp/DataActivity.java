@@ -39,7 +39,7 @@ import java.util.UUID;
 
 import static com.tfgstuff.blueapp.R.layout.activity_data;
 
-public class DataActivity extends AppCompatActivity {
+public class DataActivity extends AppCompatActivity implements ConfirmActionDialog.OnPositiveButtonClickListener {
 
     private static final int GATT_INTERNAL_ERROR = 129;
     private static final String SERVICE_UUID = "4fafc201-1fb5-459e-8fcc-c5c9c331914b";
@@ -47,9 +47,9 @@ public class DataActivity extends AppCompatActivity {
     private static final String DESCRIPTOR_UUID = "00002902-0000-1000-8000-00805f9b34fb";
 
     private static int counter = 0;
-    public static boolean connected;
+    private static boolean connected;
 
-    public static BluetoothGatt bluetoothGatt;
+    private BluetoothGatt bluetoothGatt;
     private FirebaseDatabase database = FirebaseDatabase.getInstance();
     private Datos data = new Datos();
     private BluetoothDevice bluetoothDevice;
@@ -319,6 +319,12 @@ public class DataActivity extends AppCompatActivity {
         String now = LocalDateTime.now().format(formatter);
         DatabaseReference dataRef = database.getReference().child("devices").child(bluetoothDevice.getAddress().substring(9)).child(now);
         dataRef.setValue(data);
+    }
+
+    @Override
+    public void onPoisitiveButtonClick() {
+        bluetoothGatt.disconnect();
+        connected = false;
     }
 }
 
