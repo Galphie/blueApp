@@ -98,7 +98,9 @@ public class DataActivity extends AppCompatActivity {
                 DialogFragment dialogFragment = new ConfirmActionDialog(new ConfirmActionDialog.OnButtonClickListener() {
                     @Override
                     public void onPositiveButtonClick(DialogInterface dialogFragment) {
-                        Utils.toast(getApplicationContext(), "Pablo, puto");
+                        status.setText(getString(R.string.disconnected));
+                        status.setTextColor(Color.RED);
+                        connectButton.setText(getString(R.string.reconnect));
                     }
 
                     @Override
@@ -111,9 +113,7 @@ public class DataActivity extends AppCompatActivity {
                 args.putInt("type", ConfirmActionDialog.DISCONNECTION_CODE);
                 dialogFragment.setArguments(args);
                 dialogFragment.show(getSupportFragmentManager(), "confirm_disconnection");
-//                status.setText(getString(R.string.disconnected));
-//                status.setTextColor(Color.RED);
-//                connectButton.setText(getString(R.string.reconnect));
+
             } else {
                 connect();
                 connectButton.setText(getString(R.string.disconnect));
