@@ -97,6 +97,7 @@ public class DataActivity extends AppCompatActivity implements ConfirmActionDial
                 DialogFragment dialogFragment = new ConfirmActionDialog();
                 Bundle args = new Bundle();
                 args.putString("confirm_action_dialog_message", "¿Deseas desconectarte?");
+                args.putInt("type", ConfirmActionDialog.DISCONNECTION_CODE);
                 dialogFragment.setArguments(args);
                 dialogFragment.show(getSupportFragmentManager(), "confirm_disconnection");
 //                status.setText(getString(R.string.disconnected));
