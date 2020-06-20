@@ -101,6 +101,7 @@ public class DataActivity extends AppCompatActivity {
                         status.setText(getString(R.string.disconnected));
                         status.setTextColor(Color.RED);
                         connectButton.setText(getString(R.string.reconnect));
+                        counter = 0;
                     }
 
                     @Override
